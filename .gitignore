@@ -1,0 +1,7 @@
+# Ignore secrets and environment variables
+.env
+
+# Other files to ignore
+db.sqlite3
+__pycache__/
+*.pyc
