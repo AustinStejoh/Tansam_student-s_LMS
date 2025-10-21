@@ -4,79 +4,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tansam E-Learning Portal</title>
+    <title>Tansam School</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', 'Helvetica', sans-serif;
         }
+        
         body {
-            line-height: 1.6;
-            color: #2d2d2d;
-            background: radial-gradient(circle, #f7ece1 0%, #fff 100%);
+            font-family: 'Baskerville', 'Garamond', 'Georgia', serif;
+            line-height: 1.8;
+            color: #1a1a1a;
+            background-color: #fafaf8;
             overflow-x: hidden;
         }
+        
+        /* Header */
         header {
-            background: linear-gradient(90deg, #4ecdc4 0%, #45b7d1 100%);
+            background: linear-gradient(135deg, #0f2557 0%, #1e3a8a 100%);
             color: white;
-            padding: 1rem 2rem;
+            padding: 1.5rem 0;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        header .logo img {
-            height: 70px;
-            width: auto;
-            border-radius: 10px;
-            display: block;
-        }
-        header h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-        }
-        header nav {
+        
+        .logo-section {
             display: flex;
-            justify-content: center;
+            align-items: center;
             gap: 1.5rem;
         }
+        
+        .logo-section img {
+            height: 70px;
+            width: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo-section h1 {
+            font-size: 1.8rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            font-family: 'Garamond', 'Georgia', serif;
+        }
+        
+        header nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
         header nav a {
             color: white;
             text-decoration: none;
-            font-size: 1.2rem;
+            font-size: 1rem;
             padding: 0.6rem 1.2rem;
-            border-radius: 5px;
+            border-radius: 4px;
             transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            font-weight: 500;
         }
+        
         header nav a:hover {
-            background-color: #ff6f61;
-            color: white;
-            transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
         }
+        
+        header nav a.login-btn {
+            background-color: #d97706;
+            border: 2px solid #d97706;
+        }
+        
+        header nav a.login-btn:hover {
+            background-color: #b45309;
+            border-color: #b45309;
+        }
+        
+        /* Hero Section */
         .hero {
-            text-align: center;
-            padding: 0; /* carousel controls internal spacing */
-            color: #2d2d2d;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 3rem;
-            background: linear-gradient(180deg, #e6fff9 0%, #f7f9ff 100%);
+            background-color: #fff;
+            border-bottom: 3px solid #e5e7eb;
         }
-
-        /* Carousel styles */
+        
         .carousel {
             position: relative;
             width: 100%;
-            height: 520px;
-            max-height: 75vh;
+            height: 500px;
             overflow: hidden;
         }
+        
         .carousel .slide {
             position: absolute;
             top: 0;
@@ -85,309 +113,419 @@
             height: 100%;
             background-size: cover;
             background-position: center;
-            transition: left 0.8s cubic-bezier(.2,.9,.3,1);
+            transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4rem 2rem;
         }
+        
         .carousel .slide.active { left: 0; }
         .carousel .slide.prev { left: -100%; }
+        
         .slide-content {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(4px);
-            padding: 2.5rem 3rem;
-            border-radius: 14px;
-            max-width: 980px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3.5rem 3rem;
+            border-radius: 2px;
+            max-width: 700px;
             text-align: center;
-            color: #fff;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
-        .slide-content h2 { font-size: 3.6rem; margin-bottom: 1rem; text-shadow: 2px 2px 12px rgba(0,0,0,0.35); }
-        .slide-content p { font-size: 1.25rem; margin-bottom: 1.6rem; color: rgba(255,255,255,0.95); }
-
+        
+        .slide-content h2 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            color: #0f2557;
+            font-weight: 400;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+        }
+        
+        .slide-content p {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            color: #4a4a4a;
+            line-height: 1.7;
+        }
+        
+        .slide-content .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background-color: #2d6b5a;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(45, 107, 90, 0.3);
+        }
+        
+        .slide-content .btn:hover {
+            background-color: #1f4a44;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(45, 107, 90, 0.4);
+        }
+        
         .carousel-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0,0,0,0.35);
+            background: rgba(15, 37, 87, 0.7);
             border: none;
             color: white;
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
         }
-        .carousel-btn:hover { transform: translateY(-50%) scale(1.05); background: rgba(0,0,0,0.5); }
-        .carousel-btn.prev { left: 18px; }
-        .carousel-btn.next { right: 18px; }
-
-        .carousel-dots { position: absolute; left: 50%; transform: translateX(-50%); bottom: 18px; display:flex; gap:10px; }
-        .carousel-dots button { width:12px; height:12px; border-radius:50%; border:none; background: rgba(255,255,255,0.5); cursor:pointer; }
-        .carousel-dots button.active { background: #ff6f61; box-shadow: 0 4px 12px rgba(255,111,97,0.4); }
-        .hero h2 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 800;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            animation: pulse 2s infinite;
+        
+        .carousel-btn:hover {
+            background: rgba(15, 37, 87, 0.9);
+            transform: translateY(-50%) scale(1.1);
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        .hero p {
-            font-size: 1.4rem;
-            margin-bottom: 3rem;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            color: #fff;
-        }
-        .hero .btn {
-            display: inline-block;
-            padding: 1.3rem 3rem;
-            background-color: #ff6f61;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-size: 1.4rem;
-            transition: all 0.4s ease;
-            box-shadow: 0 6px 20px rgba(255, 111, 97, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-        .hero .btn:hover {
-            background-color: #e65b4d;
-            transform: scale(1.1) rotate(2deg);
-            box-shadow: 0 8px 25px rgba(255, 111, 97, 0.7);
-        }
-        .hero .btn::after {
-            content: '';
+        
+        .carousel-btn.prev { left: 20px; }
+        .carousel-btn.next { right: 20px; }
+        
+        .carousel-dots {
             position: absolute;
-            width: 0;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.3);
-            top: 0;
-            left: -100%;
-            transition: all 0.4s ease;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 20px;
+            display: flex;
+            gap: 12px;
         }
-        .hero .btn:hover::after {
-            width: 100%;
-            left: 0;
+        
+        .carousel-dots button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
+        
+        .carousel-dots button.active {
+            background: white;
+            transform: scale(1.2);
+        }
+        
+        /* Section Styling */
         .section {
             padding: 5rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
             opacity: 0;
-            transform: translateY(30px) scale(0.95);
-            transition: all 0.8s ease;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
         .section.visible {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
         }
-        .section h2 {
+        
+        .section-header {
             text-align: center;
-            font-size: 2.8rem;
-            margin-bottom: 3rem;
-            color: #2d2d2d;
-            font-weight: 700;
-            border-bottom: 3px solid #4ecdc4;
+            margin-bottom: 4rem;
+        }
+        
+        .section h2 {
+            font-size: 2.5rem;
+            color: #0f2557;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+            position: relative;
             display: inline-block;
-            padding-bottom: 0.7rem;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
         }
+        
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #d97706, transparent);
+        }
+        
+        /* About Section */
+        .about {
+            background-color: white;
+            border-top: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
         .about p {
-            max-width: 850px;
-            margin: 0 auto 1.8rem;
-            font-size: 1.2rem;
-            color: #444;
+            font-size: 1.15rem;
+            color: #3a3a3a;
+            margin-bottom: 1.8rem;
             text-align: justify;
-            line-height: 1.8;
+            line-height: 1.9;
+            text-indent: 2em;
         }
+        
+        .about p:first-of-type::first-letter {
+            font-size: 3.5rem;
+            font-weight: 400;
+            float: left;
+            line-height: 1;
+            margin: 0.1rem 0.15rem 0 0;
+            color: #0f2557;
+        }
+        
+        /* Features Section */
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
         }
+        
         .feature-card {
-            background: linear-gradient(145deg, #fff 0%, #f7ece1 100%);
-            padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            padding: 2.5rem 2rem;
+            border-radius: 2px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
             text-align: center;
-            transition: all 0.4s ease;
-            border: 2px solid #4ecdc4;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #0f2557, #d97706);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        
         .feature-card:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
         }
+        
         .feature-card .icon {
             font-size: 3rem;
-            margin-bottom: 1.8rem;
-            color: #ff6f61;
-            text-shadow: 1px 1px 5px rgba(255, 111, 97, 0.3);
+            margin-bottom: 1.5rem;
         }
+        
         .feature-card h3 {
-            margin-bottom: 1.2rem;
-            color: #2d2d2d;
-            font-size: 1.7rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            color: #0f2557;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
         }
+        
         .feature-card p {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: #555;
+            line-height: 1.7;
         }
+        
+        /* Testimonials Section */
+        .testimonials-section {
+            background-color: #f8f9fa;
+        }
+        
         .testimonials {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
         }
+        
         .testimonial-card {
-            background: linear-gradient(145deg, #fff 0%, #f7ece1 100%);
-            padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: all 0.4s ease;
-            border: 2px solid #4ecdc4;
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 2px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #2d6b5a;
+            transition: all 0.3s ease;
         }
+        
         .testimonial-card:hover {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateX(5px);
         }
+        
         .testimonial-card p {
             font-style: italic;
-            margin-bottom: 1.8rem;
-            font-size: 1.2rem;
-            color: #444;
-        }
-        .testimonial-card .author {
-            font-weight: 700;
-            color: #ff6f61;
-            font-size: 1.2rem;
-            text-shadow: 1px 1px 3px rgba(255, 111, 97, 0.2);
-        }
-        footer {
-            background: linear-gradient(90deg, #4ecdc4 0%, #45b7d1 100%);
-            color: white;
-            text-align: center;
-            padding: 2.5rem;
-            margin-top: 3rem;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-        }
-        footer p {
-            margin-bottom: 0.8rem;
             font-size: 1.1rem;
+            color: #3a3a3a;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            position: relative;
         }
-        footer a {
-            color: #ff6f61;
-            text-decoration: none;
+        
+        .testimonial-card p::before {
+            content: '"';
+            font-size: 3rem;
+            color: #d97706;
+            position: absolute;
+            left: -0.5rem;
+            top: -0.8rem;
+            opacity: 0.3;
+        }
+        
+        .testimonial-card .author {
             font-weight: 600;
+            color: #0f2557;
+            font-size: 1.05rem;
+            letter-spacing: 0.3px;
         }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #0f2557 0%, #1e3a8a 100%);
+            color: white;
+            padding: 3rem 2rem 2rem;
+            margin-top: 0;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        footer p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        footer a {
+            color: #fbbf24;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
         footer a:hover {
+            color: #f59e0b;
             text-decoration: underline;
-            color: #e65b4d;
         }
-        @media (max-width: 600px) {
-            header {
+        
+        .footer-divider {
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            margin: 1.5rem auto;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
                 flex-direction: column;
-                gap: 1.2rem;
+                gap: 1rem;
             }
-            header h1 {
-                font-size: 1.8rem;
+            
+            .logo-section h1 {
+                font-size: 1.5rem;
             }
+            
             header nav {
-                flex-direction: column;
-                gap: 0.7rem;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
             }
-            .hero h2 {
-                font-size: 2.5rem;
+            
+            .carousel {
+                height: 400px;
             }
-            .hero p {
-                font-size: 1.2rem;
+            
+            .slide-content {
+                padding: 2rem 1.5rem;
             }
+            
+            .slide-content h2 {
+                font-size: 2rem;
+            }
+            
+            .slide-content p {
+                font-size: 1rem;
+            }
+            
+            .section {
+                padding: 3rem 1.5rem;
+            }
+            
             .section h2 {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
+            
+            .about p {
+                font-size: 1.05rem;
+                text-indent: 1.5em;
+            }
+            
             .features, .testimonials {
                 grid-template-columns: 1fr;
             }
-            .hero .btn {
-                padding: 1.1rem 2.2rem;
-                font-size: 1.2rem;
-            }
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Smooth scrolling
-            const navLinks = document.querySelectorAll('header nav a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href').substring(1);
-                    document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
-                });
-            });
-
-            // Fade-in and scale animation
-            const sections = document.querySelectorAll('.section');
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-        });
-    </script>
 </head>
 <body>
     <header>
-        <div class="logo">
-            <img src="{% static "images/img.png" %}" alt="Tansam Logo">
+        <div class="header-container">
+            <div class="logo-section">
+                <img src="{% static 'img.png' %}" alt="Tansam School Logo" onerror="this.src='https://via.placeholder.com/70';">
+                <h1>Tansam School</h1>
+            </div>
+            <nav>
+                <a href="#about">About</a>
+                <a href="#features">Features</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href="/login/" class="login-btn">Login</a>
+            </nav>
         </div>
-        <h1>Tansam E-Learning Portal</h1>
-        <nav>
-            <a href="#about">About</a>
-            <a href="#features">Features</a>
-            <a href="#testimonials">Testimonials</a>
-            <a href="/login/">Login</a>
-        </nav>
     </header>
 
     <section class="hero">
         <div class="carousel" id="heroCarousel">
-            <div class="slide active" style="background-image: linear-gradient(135deg, rgba(78,205,196,0.85), rgba(69,183,209,0.85)), url('{% static "images/img.png" %}');">
+            <div class="slide active" style="background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(249, 245, 240, 0.95)), url('{% static "images/img.png" %}');">
                 <div class="slide-content">
-                    <h2>Welcome to Tansam E-Learning Portal</h2>
+                    <h2>Welcome to Tansam School</h2>
                     <p>Empower your learning journey with personalized courses for grades 6-12. Dive into interactive education today!</p>
                     <a href="/login/" class="btn">Get Started</a>
                 </div>
             </div>
-            <div class="slide" style="background-image: linear-gradient(135deg, rgba(255,111,97,0.6), rgba(255,175,128,0.45)), url('{% static "admin/img/calendar-icons.svg" %}');">
+            <div class="slide" style="background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(249, 245, 240, 0.95)), url('{% static "images/img.png" %}');">
                 <div class="slide-content">
                     <h2>Interactive Lessons & Quizzes</h2>
                     <p>Learn with engaging videos, live quizzes and progress tracking to boost your grades fast.</p>
                     <a href="#features" class="btn">Explore Features</a>
                 </div>
             </div>
-            <div class="slide" style="background-image: linear-gradient(135deg, rgba(69,183,209,0.6), rgba(78,205,196,0.35)), url('{% static "admin/img/gis/move_vertex_on.svg" %}');">
+            <div class="slide" style="background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(249, 245, 240, 0.95)), url('{% static "admin/img/gis/move_vertex_on.svg" %}');">
                 <div class="slide-content">
                     <h2>Mentor Support & Certificates</h2>
                     <p>Get expert mentor help and earn certificates to showcase your achievements.</p>
@@ -403,61 +541,102 @@
     </section>
 
     <section id="about" class="section about">
-        <h2>About Tansam Institution</h2>
-        <p>Founded in 2015, Tansam Institution is a pioneering e-learning platform revolutionizing education in Tamil Nadu and beyond. We blend advanced technology with expert mentorship to create tailored learning paths.</p>
-        <p>Our mission is to provide accessible, high-quality education for grades 6-12, featuring subjects like math, science, and languages, enriched with interactive resources and dedicated support.</p>
-        <p>Vision: To inspire a global network of learners, equipping them with future-ready skills and knowledge.</p>
+        <div class="section-header">
+            <h2>About Tansam Institution</h2>
+        </div>
+        <div class="about-content">
+            <p>Founded in 2015, Tansam Institution is a pioneering e-learning platform revolutionizing education in Tamil Nadu and beyond. We blend advanced technology with expert mentorship to create tailored learning paths that inspire excellence and foster intellectual growth.</p>
+            <p>Our mission is to provide accessible, high-quality education for grades 6-12, featuring subjects like mathematics, science, and languages, enriched with interactive resources and dedicated support. We believe that every student deserves the opportunity to unlock their full potential through engaging, personalized education.</p>
+            <p>Vision: To inspire a global network of learners, equipping them with future-ready skills and knowledge that transcend traditional boundaries, empowering the next generation of thinkers, innovators, and leaders.</p>
+        </div>
     </section>
 
     <section id="features" class="section">
-        <h2>Our Features</h2>
+        <div class="section-header">
+            <h2>Our Features</h2>
+        </div>
         <div class="features">
             <div class="feature-card">
                 <div class="icon">📚</div>
                 <h3>Personalized Courses</h3>
-                <p>Engaging courses with videos, PDFs, and quizzes customized for your grade level.</p>
+                <p>Engaging courses with videos, PDFs, and quizzes customized for your grade level and learning style.</p>
             </div>
             <div class="feature-card">
                 <div class="icon">📈</div>
                 <h3>Progress Tracking</h3>
-                <p>Track your growth with interactive dashboards and earn certificates.</p>
+                <p>Track your growth with interactive dashboards and earn certificates upon completion.</p>
             </div>
             <div class="feature-card">
                 <div class="icon">💳</div>
                 <h3>Secure Payments</h3>
-                <p>Easy and secure enrollment with mentor-guided payment support.</p>
+                <p>Easy and secure enrollment with mentor-guided payment support and flexible options.</p>
             </div>
             <div class="feature-card">
                 <div class="icon">👥</div>
                 <h3>Mentor Support</h3>
-                <p>Round-the-clock guidance via WhatsApp from expert mentors.</p>
+                <p>Round-the-clock guidance via WhatsApp from expert mentors dedicated to your success.</p>
             </div>
         </div>
     </section>
 
-    <section id="testimonials" class="section testimonials">
-        <h2>What Our Students Say</h2>
-        <div class="testimonial-card">
-            <p>"Tansam’s courses are a game-changer for my studies!"</p>
-            <span class="author">- Priya S., Grade 8</span>
+    <section id="testimonials" class="section testimonials-section">
+        <div class="section-header">
+            <h2>What Our Students Say</h2>
         </div>
-        <div class="testimonial-card">
-            <p>"Incredible support and engaging content—love it!"</p>
-            <span class="author">- Rahul K., Grade 10</span>
-        </div>
-        <div class="testimonial-card">
-            <p>"Affordable and life-changing—my grades soared!"</p>
-            <span class="author">- Anita M., Grade 12</span>
+        <div class="testimonials">
+            <div class="testimonial-card">
+                <p>Tansam's courses are a game-changer for my studies! The interactive lessons and supportive mentors have helped me excel beyond my expectations.</p>
+                <span class="author">— Priya S., Grade 8</span>
+            </div>
+            <div class="testimonial-card">
+                <p>Incredible support and engaging content—I love how the platform makes learning feel like an adventure rather than a chore.</p>
+                <span class="author">— Rahul K., Grade 10</span>
+            </div>
+            <div class="testimonial-card">
+                <p>Affordable and life-changing—my grades soared, and I gained confidence I never knew I had. Thank you, Tansam!</p>
+                <span class="author">— Anita M., Grade 12</span>
+            </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2025 Tansam Institution. All rights reserved.</p>
-        <p><a href="/contact/">Contact Us</a> | <a href="/privacy/">Privacy Policy</a> | <a href="/terms/">Terms of Service</a></p>
-        <p>Email: info@tansam.edu | Phone: +91-123-456-7890</p>
+        <div class="footer-content">
+            <p>&copy; 2025 Tansam School. All rights reserved.</p>
+            <div class="footer-divider"></div>
+            <p><a href="/contact/">Contact Us</a> | <a href="/privacy/">Privacy Policy</a> | <a href="/terms/">Terms of Service</a></p>
+            <p>Email: info@tansam.edu | Phone: +91-123-456-7890</p>
+        </div>
     </footer>
+
     <script>
-        (function(){
+        document.addEventListener('DOMContentLoaded', () => {
+            // Smooth scrolling
+            const navLinks = document.querySelectorAll('header nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+                    if (href.startsWith('#') && href !== '/login/') {
+                        e.preventDefault();
+                        const targetId = href.substring(1);
+                        document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Fade-in animation
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => observer.observe(section));
+
+            // Carousel
             const carousel = document.getElementById('heroCarousel');
             if (!carousel) return;
             const slides = Array.from(carousel.querySelectorAll('.slide'));
@@ -481,7 +660,6 @@
             function next() { goTo((current + 1) % slides.length); }
             function prev() { goTo((current - 1 + slides.length) % slides.length); }
 
-            // create dots
             slides.forEach((s,i)=>{
                 const btn = document.createElement('button');
                 btn.type = 'button';
@@ -493,17 +671,15 @@
             nextBtn.addEventListener('click', ()=> { next(); resetTimer(); });
             prevBtn.addEventListener('click', ()=> { prev(); resetTimer(); });
 
-            function startTimer(){ timer = setInterval(next, 4500); }
+            function startTimer(){ timer = setInterval(next, 6000); }
             function resetTimer(){ clearInterval(timer); startTimer(); }
 
-            // Pause on hover
             carousel.addEventListener('mouseenter', ()=> clearInterval(timer));
             carousel.addEventListener('mouseleave', ()=> startTimer());
 
-            // init
             goTo(0);
             startTimer();
-        })();
+        });
     </script>
 </body>
 </html>

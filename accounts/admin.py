@@ -1,25 +1,39 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from django import forms
 
+class CustomUserCreationForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('phone', 'email', 'name', 'class_level', 'role', 'payment_status')
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_unusable_password()  # ensures password is not required
+        if commit:
+            user.save()
+        return user
+
+
+@admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
-    form = CustomUserChangeForm
     model = CustomUser
-    list_display = ['phone', 'name', 'email', 'class_level', 'role', 'payment_status', 'is_active']
-    list_filter = ['role', 'class_level', 'payment_status']
+    list_display = ('name', 'phone', 'email', 'class_level', 'role', 'payment_status', 'is_active')
+    list_filter = ('role', 'class_level', 'payment_status', 'is_active')
+
     fieldsets = (
-        (None, {'fields': ('phone', 'password')}),
-        ('Personal Info', {'fields': ('name', 'email', 'class_level', 'role', 'payment_status')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+        (None, {'fields': ('phone', 'email', 'name', 'class_level', 'role', 'payment_status')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
     )
+
     add_fieldsets = (
         (None, {
-            'fields': ('phone', 'email', 'name', 'class_level', 'role', 'payment_status', 'password1', 'password2')}
-        ),
+            'classes': ('wide',),
+            'fields': ('phone', 'email', 'name', 'class_level', 'role', 'payment_status'),
+        }),
     )
-    search_fields = ['phone', 'name', 'email']
-    ordering = ['phone']
 
-admin.site.register(CustomUser, CustomUserAdmin)
+    search_fields = ('phone', 'email', 'name')
+    ordering = ('phone',)

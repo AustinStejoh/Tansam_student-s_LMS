@@ -3,9 +3,8 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Payment
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
+# 'get_user_model' and 'User = ...' have been removed from here.
 
 @receiver(post_save, sender=Payment)
 def handle_payment(sender, instance, created, **kwargs):
