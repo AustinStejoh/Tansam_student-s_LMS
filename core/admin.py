@@ -9,9 +9,11 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(Topic)
 class TopicAdmin(admin.ModelAdmin):
-    list_display = ('title', 'course', 'order')
+    list_display = ('title', 'course', 'order', 'video_file', 'ppt_file')
     list_filter = ('course',)
-    search_fields = ('title', 'content')
+    search_fields = ('title',)
+    # Enable file uploads in the admin
+    fields = ('course', 'title', 'video_file', 'ppt_file', 'order', 'assignment')
 
 @admin.register(Progress)
 class ProgressAdmin(admin.ModelAdmin):

@@ -56,7 +56,7 @@
         .tab-button.active { color: #1e3a8a; border-bottom-color: #1e3a8a; font-weight: 600;}
         .courses-grid { display: none; /* Hide by default */ }
         .courses-grid.active { display: block; /* Show active tab */ }
-        .course-card { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background-color: #f9fafb; margin-bottom: 1rem;} /* Added margin */
+        .course-card { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background-color: #f9fafb; margin-bottom: 1rem;}
         .course-header { background-color: #dbeafe; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb;}
         .course-header.impact { background-color: #dcfce7; }
         .course-title { font-weight: 600; font-size: 1.1rem; color: #1e3a8a; }
@@ -70,33 +70,33 @@
         }
         .course-progress {
             margin: 1rem 0;
-            font-size: 0.85rem; /* Added text size */
-            color: #4b5563; /* Added text color */
-            text-align: right; /* Align percentage text */
+            font-size: 0.85rem;
+            color: #4b5563;
+            text-align: right;
         }
         .course-progress .progress-bar-container {
             height: 6px;
             background: #e5e7eb;
             border-radius: 10px;
-            margin-top: 0.25rem; /* Space between text and bar */
+            margin-top: 0.25rem;
         }
         .course-progress .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #2563eb, #60a5fa); /* Blue for STEM */
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
             border-radius: 10px;
             transition: width 1s ease;
         }
         .course-progress.impact .progress-bar {
-            background: linear-gradient(90deg, #16a34a, #4ade80); /* Green for IMPACT */
+            background: linear-gradient(90deg, #16a34a, #4ade80);
         }
         .topic-list {
             list-style: none;
             font-size: 0.9rem;
             color: #374151;
-            max-height: 150px; /* Limit height for scroll */
+            max-height: 150px;
             overflow-y: auto;
-            text-align: left; /* Ensure topics align left */
-            padding-left: 0; /* Remove default padding */
+            text-align: left;
+            padding-left: 0;
         }
         .topic-list li {
             padding: 0.4rem 0;
@@ -105,26 +105,25 @@
         .topic-list li:last-child {
             border: none;
         }
-        /* Style completed topics using the set from the view */
         .topic-list li.completed::before {
-            content: '✓ '; /* Add a checkmark */
+            content: '✓ ';
             color: #16a34a;
             font-weight: bold;
             margin-right: 0.3em;
         }
-
+        /* Debug style for visibility */
+        .debug-info { color: #dc3545; font-size: 0.8rem; margin-top: 1rem; }
 
         /* Responsive Adjustments */
         @media (max-width: 768px) {
             .dashboard-grid { grid-template-columns: 1fr; }
-            .profile-card { order: -1; margin-bottom: 2rem;} /* Move profile card up on mobile */
+            .profile-card { order: -1; margin-bottom: 2rem;}
         }
         @media (max-width: 600px) {
             .header { flex-direction: column; gap: 1rem; padding: 1rem; }
             .header-right { margin-top: 0.5rem; }
             .welcome-card h2 { font-size: 1.3rem; }
         }
-
     </style>
 </head>
 <body>
@@ -155,19 +154,19 @@
     <div class="container">
         <div class="welcome-card">
             <h2>Welcome back, {{ user.name }}! 👋</h2>
-            <p>Your personalized learning journey in STEM & IMPACT starts here.</p>
+            <p>Your personalized learning journey starts here.</p>
             <p>Explore topics, track your progress, and earn certificates as you learn.</p>
             <div class="last-access">Last accessed: {{ request.session.last_access|default:"October 21, 2025, 12:03 PM IST" }}</div>
         </div>
 
         <div class="dashboard-grid">
             <aside class="profile-card">
-                 <div class="profile-avatar">{{ user.name|slice:":1" }}</div>
+                <div class="profile-avatar">{{ user.name|slice:":1" }}</div>
                 <div class="profile-name">{{ user.name }}</div>
                 <div class="profile-grade">Grade {{ user.class_level }} Student</div>
                 <div class="profile-stats">
                     <div class="stat-item"><span class="stat-label">Student ID</span><span class="stat-value">#{{ user.id|default:"68042" }}</span></div>
-                    <div class="stat-item"><span class="stat-label">Enrolled Courses</span><span class="stat-value">2</span></div>
+                    <div class="stat-item"><span class="stat-label">Enrolled Courses</span><span class="stat-value">{{ courses|length }}</span></div>
                     <div class="stat-item"><span class="stat-label">Overall Progress</span><span class="stat-value">{{ overall_progress|floatformat:1 }}%</span></div>
                     <div class="stat-item"><span class="stat-label">Certificates</span><span class="stat-value">0</span></div>
                     <div class="stat-item"><span class="stat-label">Assignments Due</span><span class="stat-value">{{ user.assignments_due|default:"0" }}</span></div>
@@ -183,7 +182,7 @@
                             <div class="progress-bar-container"><div class="progress-bar" style="width: {{ overall_progress|default:0 }}%"></div></div>
                         </div>
                         <div class="progress-card success">
-                             <div class="progress-card-header"><span>Assignments Submitted</span><span>--%</span></div>
+                            <div class="progress-card-header"><span>Assignments Submitted</span><span>--%</span></div>
                             <div class="progress-bar-container"><div class="progress-bar success" style="width: 0%"></div></div>
                         </div>
                         <div class="progress-card warning">
@@ -194,70 +193,58 @@
                 </section>
 
                 <div class="quick-actions">
-                     <div class="quick-action-btn"><span class="quick-action-icon">🧠</span><div class="quick-action-text"><h4>STEM Learning</h4><p>Explore Science & Tech</p></div></div>
-                    <div class="quick-action-btn"><span class="quick-action-icon">💡</span><div class="quick-action-text"><h4>IMPACT Skills</h4><p>Leadership & Communication</p></div></div>
-                    <div class="quick-action-btn"><span class="quick-action-icon">📈</span><div class="quick-action-text"><h4>Progress Tracker</h4><p>Monitor your goals</p></div></div>
+                    <div class="quick-action-btn"><span class="quick-action-icon">🧠</span><div class="quick-action-text"><h4>Start Learning</h4><p>Explore your courses</p></div></div>
+                    <div class="quick-action-btn"><span class="quick-action-icon">💡</span><div class="quick-action-text"><h4>Track Progress</h4><p>Monitor your goals</p></div></div>
+                    <div class="quick-action-btn"><span class="quick-action-icon">📈</span><div class="quick-action-text"><h4>View Stats</h4><p>Check your performance</p></div></div>
                     <div class="quick-action-btn"><span class="quick-action-icon">💬</span><div class="quick-action-text"><h4>Contact Mentor</h4><p>Ask your queries</p></div></div>
                 </div>
 
-                <section class="courses-section">
-                    <div class="course-tabs">
-                        <button class="tab-button active" data-tab="stem">STEM</button>
-                        <button class="tab-button" data-tab="impact">IMPACT</button>
-                    </div>
+               <section class="courses-section">
+    <h2 class="section-title">Your Courses</h2>
 
-                    <div class="courses-grid tab-content active" id="stem">
-                        <div class="course-card">
-                            <div class="course-header">
-                                <div class="course-title">STEM: Science & Tech</div>
-                                <div class="course-meta">Grade {{ user.class_level }}</div>
-                            </div>
-                            <div class="course-body">
-                                <div class="course-progress">
-                                    {{ stem_progress|floatformat:1 }}% Complete
-                                    <div class="progress-bar-container">
-                                        <div class="progress-bar" style="width: {{ stem_progress|default:0 }}%"></div>
-                                    </div>
-                                </div>
-                                <ul class="topic-list">
-                                    {% for topic in stem_topics %}
-                                        <li class="{% if topic.id in completed_topic_ids %}completed{% endif %}">
-                                            {{ topic.title }}
-                                        </li>
-                                    {% empty %}
-                                        <li>No STEM topics available</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+    <div class="courses-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        {% for cp in course_progress %}
+        <div class="course-card">
+            <div class="course-header {% if cp.course.title == 'IMPACT: Life Skills' %}impact{% endif %}">
+                <div class="course-title">{{ cp.course.title }}</div>
+                <div class="course-meta">Grade {{ user.class_level }}</div>
+            </div>
 
-                    <div class="courses-grid tab-content" id="impact">
-                        <div class="course-card">
-                            <div class="course-header impact">
-                                <div class="course-title">IMPACT: Life Skills</div>
-                                <div class="course-meta">Grade {{ user.class_level }}</div>
-                            </div>
-                            <div class="course-body">
-                                <div class="course-progress impact">
-                                    {{ impact_progress|floatformat:1 }}% Complete
-                                    <div class="progress-bar-container">
-                                        <div class="progress-bar" style="width: {{ impact_progress|default:0 }}%"></div>
-                                    </div>
-                                </div>
-                                <ul class="topic-list">
-                                     {% for topic in impact_topics %}
-                                         <li class="{% if topic.id in completed_topic_ids %}completed{% endif %}">
-                                            {{ topic.title }}
-                                        </li>
-                                    {% empty %}
-                                        <li>No IMPACT topics available</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
+            <div class="course-body">
+                {% if cp.course.image %}
+                    <img src="{{ cp.course.image.url }}" alt="{{ cp.course.title }}" style="width:100%; height:160px; object-fit:cover; border-radius:6px; margin-bottom:1rem;">
+                {% endif %}
+
+                <p style="font-size:0.9rem; color:#374151; margin-bottom:1rem;">{{ cp.course.description|truncatewords:20 }}</p>
+
+                <div class="course-progress {% if cp.course.title == 'IMPACT: Life Skills' %}impact{% endif %}">
+                    {{ cp.overall_progress|floatformat:1 }}% Complete
+                    <div class="progress-bar-container">
+                        <div class="progress-bar {% if cp.course.title == 'IMPACT: Life Skills' %}impact{% endif %}" style="width: {{ cp.overall_progress|default:0 }}%"></div>
                     </div>
-                </section>
+                </div>
+
+                <ul class="topic-list">
+                    {% for topic in cp.course.topics.all %}
+                        <li class="{% if topic.id in completed_topic_ids %}completed{% endif %}">
+                            {{ topic.title }}
+                        </li>
+                    {% empty %}
+                        <li>No topics available for this course.</li>
+                    {% endfor %}
+                </ul>
+
+                <div class="debug-info">
+                    Debug: Course={{ cp.course.title }}, Topics Count={{ cp.course.topics.count }}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No courses available.</p>
+        {% endfor %}
+    </div>
+</section>
+
             </div>
         </div>
     </div>
@@ -275,16 +262,15 @@
             });
         });
 
-        // Animate progress bars on load (no changes needed here)
+        // Animate progress bars on load
         window.addEventListener('load', () => {
             const progressBars = document.querySelectorAll('.progress-bar');
             progressBars.forEach(bar => {
                 const width = bar.style.width;
-                bar.style.width = '0%'; // Start at 0
-                // Use requestAnimationFrame for smoother start
+                bar.style.width = '0%';
                 requestAnimationFrame(() => {
-                    requestAnimationFrame(() => { // Double frame ensures transition trigger
-                       bar.style.width = width; // Animate to target width
+                    requestAnimationFrame(() => {
+                        bar.style.width = width;
                     });
                 });
             });

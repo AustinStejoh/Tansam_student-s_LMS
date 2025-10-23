@@ -3,15 +3,18 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from accounts.models import CustomUser
 
-# Define Course model
+# ------------------------------
+# Course Model
+# ------------------------------
 class Course(models.Model):
     """
-    Model representing a course with a title, description, and class level.
+    Represents a course with title, description, and class level.
     """
     CLASS_LEVELS = (
-        ('6-8', 'Classes 6-8'),
-        ('9-12', 'Classes 9-12'),
+        ('6-8', 'Classes 6–8'),
+        ('9-12', 'Classes 9–12'),
     )
+
     title = models.CharField(max_length=200)
     description = models.TextField()
     class_level = models.CharField(max_length=5, choices=CLASS_LEVELS)
@@ -20,14 +23,19 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-# Define Topic model
+
+# ------------------------------
+# Topic Model
+# ------------------------------
 class Topic(models.Model):
     """
-    Model representing a topic within a course, with content and order.
+    Represents a topic within a course.
+    Each topic can have video and PPT files as study materials.
     """
-    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='topics')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='topics')
     title = models.CharField(max_length=200)
-    content = models.TextField()
+    video_file = models.FileField(upload_to='topic_videos/', blank=True, null=True)
+    ppt_file = models.FileField(upload_to='topic_ppts/', blank=True, null=True)
     order = models.PositiveIntegerField()
     assignment = models.JSONField(null=True, blank=True)
 
@@ -37,100 +45,95 @@ class Topic(models.Model):
     def __str__(self):
         return f"{self.course.title} - {self.title}"
 
-# Define Progress model
+
+# ------------------------------
+# Progress Model
+# ------------------------------
 class Progress(models.Model):
     """
-    Model tracking a student's progress in a course, including completed topics.
+    Tracks a student's progress in a specific course.
     """
-    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'student'}, related_name='progress_records')
-    
-    # --- CHANGED THIS FIELD ---
-    course = models.ForeignKey(
-        Course, 
+    student = models.ForeignKey(
+        CustomUser,
         on_delete=models.CASCADE,
-        null=False,  # Removed null=True to ensure a course is always assigned
-        blank=False  # Removed blank=True to enforce course selection
+        limit_choices_to={'role': 'student'},
+        related_name='progress_records'
     )
-    
+
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name='progress_records'
+    )
+
     completed_topics = models.ManyToManyField('Topic', through='TopicCompletion')
     overall_progress = models.FloatField(default=0.0)
 
     def update_progress(self):
         """
-        Updates the overall_progress based on completed topics.
+        Updates the student's overall course progress as a percentage.
         """
         total_topics = self.course.topics.count()
-        if total_topics == 0:
-            self.overall_progress = 0
-        else:
+        if total_topics > 0:
             completed_count = self.topiccompletion_set.filter(completed=True).count()
-            self.overall_progress = (completed_count / total_topics * 100) if total_topics > 0 else 0.0
-        
+            self.overall_progress = (completed_count / total_topics) * 100
+        else:
+            self.overall_progress = 0.0
+
         self.save()
 
     def __str__(self):
-        course_title = self.course.title if self.course else "No Course Assigned"
-        return f"{self.student.name} - {course_title}"
+        return f"{self.student.name} - {self.course.title}"
 
-# Define TopicCompletion model
+
+# ------------------------------
+# TopicCompletion Model
+# ------------------------------
 class TopicCompletion(models.Model):
     """
-    Model tracking completion status of a topic for a student's progress.
+    Tracks whether a topic has been completed by a student.
     """
-    progress = models.ForeignKey('Progress', on_delete=models.CASCADE)
-    
-    # --- CHANGED THIS FIELD ---
-    topic = models.ForeignKey(
-        'Topic', 
-        on_delete=models.CASCADE,
-        null=False,  # Removed null=True to ensure a topic is always assigned
-        blank=False  # Removed blank=True to enforce topic selection
-    )
-    
+    progress = models.ForeignKey(Progress, on_delete=models.CASCADE)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
     assignment_score = models.FloatField(null=True, blank=True)
 
     def __str__(self):
-        topic_title = self.topic.title if self.topic else "No Topic Assigned"
-        return f"{self.progress.student.name} - {topic_title}"
+        return f"{self.progress.student.name} - {self.topic.title}"
 
-# Define Payment model
+
+# ------------------------------
+# Payment Model
+# ------------------------------
 class Payment(models.Model):
     """
-    Model representing a payment made by a student.
+    Records payments made by students.
     """
-    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'student'}, related_name='payments')
-    
-    amount = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2,
-        null=True,  # Allow database NULL
-        blank=True  # Allow admin to be blank
-    )
-    payment_date = models.DateTimeField(auto_now_add=True)
-    
-    transaction_id = models.CharField(
-        max_length=100, 
-        unique=True,
-        null=True,  # Allow database NULL
-        blank=True  # Allow admin to be blank
+    student = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        limit_choices_to={'role': 'student'},
+        related_name='payments'
     )
 
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    payment_date = models.DateTimeField(auto_now_add=True)
+    transaction_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
+
     def clean(self):
-        # --- UPDATED THIS LOGIC ---
         if self.amount is not None and self.amount <= 0:
             raise ValidationError("Amount must be greater than zero.")
-        if self.amount is None and self.transaction_id:  # Require amount if transaction_id is provided
+        if self.amount is None and self.transaction_id:
             raise ValidationError("Amount is required when providing a transaction ID.")
 
     def save(self, *args, **kwargs):
         self.clean()  # Validate before saving
         super().save(*args, **kwargs)
-        
-        # Update payment_status only if amount is provided and payment_status is False
-        if self.student and self.amount is not None and self.amount > 0 and not self.student.payment_status:
+
+        # Automatically mark payment_status = True if payment is valid
+        if self.student and self.amount and self.amount > 0 and not getattr(self.student, 'payment_status', False):
             self.student.payment_status = True
-            self.student.save()
+            self.student.save(update_fields=['payment_status'])
 
     def __str__(self):
-        return f"{self.student.name} - {self.amount or 'No Amount'}"
+        return f"{self.student.name} - ₹{self.amount or 'No Amount'}"

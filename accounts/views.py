@@ -1,26 +1,34 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm
+from django.contrib import messages
+from django.urls import reverse
+from .models import CustomUser
+import logging
 
-def register_view(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('dashboard')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
+logger = logging.getLogger(__name__)
 
 def login_view(request):
     if request.method == 'POST':
         phone = request.POST.get('phone')
-        password = request.POST.get('password')
-        user = authenticate(request, username=phone, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('dashboard')
-        else:
-            return render(request, 'login.html', {'error': 'Invalid credentials'})
+        logger.info(f"Attempting login with phone: {phone}")
+        print(phone)
+        try:
+            user = CustomUser.objects.get(phone=phone)
+            logger.info(f"Found user: {user.phone}, Payment Status: {user.payment_status}, Password Usable: {user.has_usable_password()}")
+            if user.payment_status:
+                login(request, user)
+                messages.success(request, 'Login successful! Redirecting to dashboard.')
+                return redirect(reverse('dashboard'))
+            else:
+                messages.error(request, 'Access denied. Only paid students can log in.')
+        except CustomUser.DoesNotExist:
+            logger.info(f"Phone {phone} not found in database")
+            messages.error(request, 'Phone number not found.')
+    else:
+        return render(request, 'login.html')
     return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect(reverse('login'))
