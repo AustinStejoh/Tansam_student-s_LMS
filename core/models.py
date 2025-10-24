@@ -5,7 +5,7 @@ from accounts.models import CustomUser
 
 # ------------------------------
 # Course Model
-# ------------------------------
+# ------------------------------ 
 class Course(models.Model):
     """
     Represents a course with title, description, and class level.
@@ -104,6 +104,7 @@ class TopicCompletion(models.Model):
 
 # ------------------------------
 # Payment Model
+
 # ------------------------------
 class Payment(models.Model):
     """

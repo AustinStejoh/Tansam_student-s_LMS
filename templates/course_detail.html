@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ course.title }} - Topics</title>
+    <style>
+        body { font-family: sans-serif; background: #f9fafb; color: #1e3a8a; margin:0; }
+        .container { max-width: 900px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 10px; }
+        h1 { color: #1e3a8a; }
+        .topic-card { margin-bottom: 2rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #f3f4f6; padding: 1rem 1.5rem;}
+        .topic-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; }
+        .topic-section { margin-bottom: 1rem; }
+        .back-link { display:inline-block; margin-bottom: 1rem; color: #1e3a8a; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'dashboard' %}" class="back-link">&larr; Back to Dashboard</a>
+        <h1>{{ course.title }}</h1>
+        <p>{{ course.description }}</p>
+        {% for topic in topics %}
+        <div class="topic-card">
+            <div class="topic-title">{{ topic.title }}</div>
+            <div class="topic-section">
+                <strong>Learning:</strong>
+                <div>{{ topic.learning_content|safe }}</div>
+            </div>
+            <div class="topic-section">
+                <strong>Assignment:</strong>
+                <div>{{ topic.assignment|safe }}</div>
+            </div>
+            <div class="topic-section">
+                <strong>MCQ:</strong>
+                <ul>
+                {% for mcq in topic.mcq_set.all %}
+                    <li>{{ mcq.question }}</li>
+                {% empty %}
+                    <li>No MCQs for this topic.</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% empty %}
+        <p>No topics for this course yet.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -58,6 +58,13 @@ def login_view(request):
     return render(request, 'login.html', context)
 
 
+from django.contrib.auth import logout
+from django.urls import reverse
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect(reverse('login'))
+
 # ------------------- DASHBOARD VIEW -------------------
 @login_required
 def dashboard_view(request):

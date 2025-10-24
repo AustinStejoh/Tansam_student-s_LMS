@@ -5,8 +5,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('accounts.urls')),  # This will now work if accounts.urls exists
-    path('', include('core.urls')),     # This needs core.urls to exist too
+    path('accounts/', include('accounts.urls')),  # Ensure this matches
+    path('', include('core.urls')),
 ]
 
 if settings.DEBUG:

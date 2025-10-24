@@ -6,14 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tansam School - Student Dashboard</title>
     <style>
-        /* [Keep all existing styles unchanged - including .course-body etc.] */
-        /* Basic styling for demonstration */
         body { font-family: sans-serif; margin: 0; background-color: #f9fafb; color: #1f2937;}
         .header { background-color: #1e3a8a; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-left, .header-right, .user-menu { display: flex; align-items: center; gap: 1rem; }
         .header-title h1 { font-size: 1.5rem; margin: 0; }
         .header-title p { font-size: 0.8rem; margin: 0; color: #9ca3af; }
-        .logo { width: 40px; height: 40px; } /* Simple styling for SVG */
+        .logo { width: 40px; height: 40px; }
         .notification-icon { position: relative; cursor: pointer; }
         .notification-badge { position: absolute; top: -5px; right: -8px; background-color: #ef4444; color: white; border-radius: 50%; font-size: 0.7rem; padding: 2px 5px; }
         .user-avatar { width: 40px; height: 40px; background-color: #fbbf24; color: #1e3a8a; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; }
@@ -51,70 +49,24 @@
         .quick-action-text h4 { font-size: 1rem; margin: 0 0 0.25rem 0; }
         .quick-action-text p { font-size: 0.8rem; margin: 0; color: #6b7280; }
         .courses-section { background-color: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .course-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb;}
-        .tab-button { background: none; border: none; padding: 0.75rem 1rem; font-size: 1rem; cursor: pointer; color: #6b7280; border-bottom: 3px solid transparent; transition: color 0.2s ease, border-color 0.2s ease;}
-        .tab-button.active { color: #1e3a8a; border-bottom-color: #1e3a8a; font-weight: 600;}
-        .courses-grid { display: none; /* Hide by default */ }
-        .courses-grid.active { display: block; /* Show active tab */ }
-        .course-card { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background-color: #f9fafb; margin-bottom: 1rem;}
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;}
+        .course-card { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background-color: #f9fafb; margin-bottom: 1rem; cursor:pointer; transition: box-shadow 0.2s;}
+        .course-card:hover { box-shadow: 0 4px 12px rgba(30,58,138,0.11);}
         .course-header { background-color: #dbeafe; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb;}
         .course-header.impact { background-color: #dcfce7; }
         .course-title { font-weight: 600; font-size: 1.1rem; color: #1e3a8a; }
         .course-header.impact .course-title { color: #15803d; }
         .course-meta { font-size: 0.85rem; color: #4b5563; }
-
-        /* Enhanced course card layout */
-        .course-body {
-            padding: 1.25rem;
-            min-height: 200px; /* Ensure minimum height */
-        }
-        .course-progress {
-            margin: 1rem 0;
-            font-size: 0.85rem;
-            color: #4b5563;
-            text-align: right;
-        }
-        .course-progress .progress-bar-container {
-            height: 6px;
-            background: #e5e7eb;
-            border-radius: 10px;
-            margin-top: 0.25rem;
-        }
-        .course-progress .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #2563eb, #60a5fa);
-            border-radius: 10px;
-            transition: width 1s ease;
-        }
-        .course-progress.impact .progress-bar {
-            background: linear-gradient(90deg, #16a34a, #4ade80);
-        }
-        .topic-list {
-            list-style: none;
-            font-size: 0.9rem;
-            color: #374151;
-            max-height: 150px;
-            overflow-y: auto;
-            text-align: left;
-            padding-left: 0;
-        }
-        .topic-list li {
-            padding: 0.4rem 0;
-            border-bottom: 1px dashed #e5e7eb;
-        }
-        .topic-list li:last-child {
-            border: none;
-        }
-        .topic-list li.completed::before {
-            content: '✓ ';
-            color: #16a34a;
-            font-weight: bold;
-            margin-right: 0.3em;
-        }
-        /* Debug style for visibility */
+        .course-body { padding: 1.25rem; min-height: 200px; }
+        .course-progress { margin: 1rem 0; font-size: 0.85rem; color: #4b5563; text-align: right; }
+        .course-progress .progress-bar-container { height: 6px; background: #e5e7eb; border-radius: 10px; margin-top: 0.25rem; }
+        .course-progress .progress-bar { height: 100%; background: linear-gradient(90deg, #2563eb, #60a5fa); border-radius: 10px; transition: width 1s ease; }
+        .course-progress.impact .progress-bar { background: linear-gradient(90deg, #16a34a, #4ade80); }
+        .topic-list { list-style: none; font-size: 0.9rem; color: #374151; max-height: 150px; overflow-y: auto; text-align: left; padding-left: 0; }
+        .topic-list li { padding: 0.4rem 0; border-bottom: 1px dashed #e5e7eb; }
+        .topic-list li:last-child { border: none; }
+        .topic-list li.completed::before { content: '✓ '; color: #16a34a; font-weight: bold; margin-right: 0.3em; }
         .debug-info { color: #dc3545; font-size: 0.8rem; margin-top: 1rem; }
-
-        /* Responsive Adjustments */
         @media (max-width: 768px) {
             .dashboard-grid { grid-template-columns: 1fr; }
             .profile-card { order: -1; margin-bottom: 2rem;}
@@ -123,6 +75,105 @@
             .header { flex-direction: column; gap: 1rem; padding: 1rem; }
             .header-right { margin-top: 0.5rem; }
             .welcome-card h2 { font-size: 1.3rem; }
+        }
+        .chatbot-toggle-btn {
+            background: #fff;
+            color: #1e3a8a;
+            border: 2px solid #1e3a8a;
+            border-radius: 50px;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 1rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .chatbot-toggle-btn:hover {
+            background: #1e3a8a;
+            color: #fff;
+        }
+        .logout-btn {
+            background: #fff;
+            color: #ef4444;
+            border: 2px solid #ef4444;
+            border-radius: 50px;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .logout-btn:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+        .chatbot-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 340px;
+            max-width: 96vw;
+            background: #fff;
+            box-shadow: 0 8px 32px rgba(30,58,138,0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+        .chatbot-header {
+            background: #1e3a8a;
+            color: #fff;
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .chatbot-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .chatbot-body {
+            flex: 1;
+            padding: 1rem;
+            background: #f1f5f9;
+            max-height: 320px;
+            overflow-y: auto;
+            font-size: 0.97rem;
+        }
+        .chatbot-message {
+            margin-bottom: 0.9rem;
+            line-height: 1.5;
+        }
+        .chatbot-message.user { text-align: right; }
+        .chatbot-message.bot { text-align: left; color: #1e3a8a; }
+        .chatbot-input-bar {
+            display: flex;
+            border-top: 1px solid #e5e7eb;
+            background: #fff;
+        }
+        .chatbot-input-bar input {
+            border: none;
+            flex: 1;
+            padding: 0.8rem;
+            font-size: 1rem;
+            outline: none;
+            background: transparent;
+        }
+        .chatbot-input-bar button {
+            background: #1e3a8a;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.1rem;
+            font-size: 1rem;
+            border-radius: 0 12px 12px 0;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -148,9 +199,13 @@
                     <p>Grade {{ user.class_level }}</p>
                 </div>
             </div>
+            <button class="chatbot-toggle-btn" id="chatbotToggleBtn" title="Ask SchoolBot">💬 Chat</button>
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn" title="Logout">Logout</button>
+            </form>
         </div>
     </header>
-
     <div class="container">
         <div class="welcome-card">
             <h2>Welcome back, {{ user.name }}! 👋</h2>
@@ -158,7 +213,6 @@
             <p>Explore topics, track your progress, and earn certificates as you learn.</p>
             <div class="last-access">Last accessed: {{ request.session.last_access|default:"October 21, 2025, 12:03 PM IST" }}</div>
         </div>
-
         <div class="dashboard-grid">
             <aside class="profile-card">
                 <div class="profile-avatar">{{ user.name|slice:":1" }}</div>
@@ -172,7 +226,6 @@
                     <div class="stat-item"><span class="stat-label">Assignments Due</span><span class="stat-value">{{ user.assignments_due|default:"0" }}</span></div>
                 </div>
             </aside>
-
             <div class="main-content">
                 <section class="progress-section">
                     <h2 class="section-title">Your Progress Overview</h2>
@@ -191,66 +244,70 @@
                         </div>
                     </div>
                 </section>
-
                 <div class="quick-actions">
                     <div class="quick-action-btn"><span class="quick-action-icon">🧠</span><div class="quick-action-text"><h4>Start Learning</h4><p>Explore your courses</p></div></div>
                     <div class="quick-action-btn"><span class="quick-action-icon">💡</span><div class="quick-action-text"><h4>Track Progress</h4><p>Monitor your goals</p></div></div>
                     <div class="quick-action-btn"><span class="quick-action-icon">📈</span><div class="quick-action-text"><h4>View Stats</h4><p>Check your performance</p></div></div>
                     <div class="quick-action-btn"><span class="quick-action-icon">💬</span><div class="quick-action-text"><h4>Contact Mentor</h4><p>Ask your queries</p></div></div>
                 </div>
-
-               <section class="courses-section">
-    <h2 class="section-title">Your Courses</h2>
-
-    <div class="courses-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-        {% for cp in course_progress %}
-        <div class="course-card">
-            <div class="course-header {% if cp.course.title == 'IMPACT: Life Skills' %}impact{% endif %}">
-                <div class="course-title">{{ cp.course.title }}</div>
-                <div class="course-meta">Grade {{ user.class_level }}</div>
-            </div>
-
-            <div class="course-body">
-                {% if cp.course.image %}
-                    <img src="{{ cp.course.image.url }}" alt="{{ cp.course.title }}" style="width:100%; height:160px; object-fit:cover; border-radius:6px; margin-bottom:1rem;">
-                {% endif %}
-
-                <p style="font-size:0.9rem; color:#374151; margin-bottom:1rem;">{{ cp.course.description|truncatewords:20 }}</p>
-
-                <div class="course-progress {% if cp.course.title == 'IMPACT: Life Skills' %}impact{% endif %}">
-                    {{ cp.overall_progress|floatformat:1 }}% Complete
-                    <div class="progress-bar-container">
-                        <div class="progress-bar {% if cp.course.title == 'IMPACT: Life Skills' %}impact{% endif %}" style="width: {{ cp.overall_progress|default:0 }}%"></div>
+                <section class="courses-section">
+                    <h2 class="section-title">Your Courses</h2>
+                    <div class="courses-grid">
+                        {% for cp in course_progress %}
+                        <a href="{% url 'course_detail' cp.course.id %}" style="text-decoration:none; color:inherit;">
+                            <div class="course-card">
+                                <div class="course-header {% if cp.course.title == 'IMPACT: Life Skills' %}impact{% endif %}">
+                                    <div class="course-title">{{ cp.course.title }}</div>
+                                    <div class="course-meta">Grade {{ user.class_level }}</div>
+                                </div>
+                                <div class="course-body">
+                                    {% if cp.course.image %}
+                                        <img src="{{ cp.course.image.url }}" alt="{{ cp.course.title }}" style="width:100%; height:160px; object-fit:cover; border-radius:6px; margin-bottom:1rem;">
+                                    {% endif %}
+                                    <p style="font-size:0.9rem; color:#374151; margin-bottom:1rem;">{{ cp.course.description|truncatewords:20 }}</p>
+                                    <div class="course-progress {% if cp.course.title == 'IMPACT: Life Skills' %}impact{% endif %}">
+                                        {{ cp.overall_progress|floatformat:1 }}% Complete
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar {% if cp.course.title == 'IMPACT: Life Skills' %}impact{% endif %}" style="width: {{ cp.overall_progress|default:0 }}%"></div>
+                                        </div>
+                                    </div>
+                                    <ul class="topic-list">
+                                        {% for topic in cp.course.topics.all %}
+                                            <li class="{% if topic.id in completed_topic_ids %}completed{% endif %}">{{ topic.title }}</li>
+                                        {% empty %}
+                                            <li>No topics available for this course.</li>
+                                        {% endfor %}
+                                    </ul>
+                                    <div class="debug-info">
+                                        Debug: Course={{ cp.course.title }}, Topics Count={{ cp.course.topics.count }}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        {% empty %}
+                        <p>No courses available.</p>
+                        {% endfor %}
                     </div>
-                </div>
-
-                <ul class="topic-list">
-                    {% for topic in cp.course.topics.all %}
-                        <li class="{% if topic.id in completed_topic_ids %}completed{% endif %}">
-                            {{ topic.title }}
-                        </li>
-                    {% empty %}
-                        <li>No topics available for this course.</li>
-                    {% endfor %}
-                </ul>
-
-                <div class="debug-info">
-                    Debug: Course={{ cp.course.title }}, Topics Count={{ cp.course.topics.count }}
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <p>No courses available.</p>
-        {% endfor %}
-    </div>
-</section>
-
+                </section>
             </div>
         </div>
     </div>
-
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget" id="chatbotWidget">
+        <div class="chatbot-header">
+            <span class="chatbot-title">SchoolBot</span>
+            <button class="chatbot-close" id="chatbotCloseBtn" title="Close">&times;</button>
+        </div>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="chatbot-message bot">Hi {{ user.name|default:"student" }}! 👋<br>How can I help you today?</div>
+        </div>
+        <form class="chatbot-input-bar" id="chatbotForm" autocomplete="off">
+            <input type="text" id="chatbotInput" placeholder="Type your question..." required />
+            <button type="submit">Send</button>
+        </form>
+    </div>
     <script>
-        // Simple tab switching
+        // Tab switching (if tabs exist)
         const tabs = document.querySelectorAll('.tab-button');
         const contents = document.querySelectorAll('.tab-content');
         tabs.forEach(btn => {
@@ -261,7 +318,6 @@
                 document.getElementById(btn.dataset.tab).classList.add('active');
             });
         });
-
         // Animate progress bars on load
         window.addEventListener('load', () => {
             const progressBars = document.querySelectorAll('.progress-bar');
@@ -274,6 +330,49 @@
                     });
                 });
             });
+        });
+        // Chatbot logic
+        const chatbotToggleBtn = document.getElementById('chatbotToggleBtn');
+        const chatbotWidget = document.getElementById('chatbotWidget');
+        const chatbotCloseBtn = document.getElementById('chatbotCloseBtn');
+        const chatbotForm = document.getElementById('chatbotForm');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotBody = document.getElementById('chatbotBody');
+        chatbotToggleBtn.addEventListener('click', () => {
+            chatbotWidget.style.display = chatbotWidget.style.display === 'flex' ? 'none' : 'flex';
+            chatbotInput.focus();
+        });
+        chatbotCloseBtn.addEventListener('click', () => {
+            chatbotWidget.style.display = 'none';
+        });
+        function botReply(userMsg) {
+            let reply = "Sorry, I'm still learning. Please contact your mentor for urgent help.";
+            const msgLC = userMsg.toLowerCase();
+            if (msgLC.includes("progress")) reply = "You can check your progress in the Progress Overview section above.";
+            else if (msgLC.includes("course")) reply = "All your enrolled courses are listed in the Courses section!";
+            else if (msgLC.includes("mentor")) reply = "You can contact your mentor using the 'Contact Mentor' button.";
+            else if (msgLC.includes("certificate")) reply = "Certificates are awarded after completing a course.";
+            else if (msgLC.includes("assignment")) reply = "Assignments and their due dates are shown in your profile card and course details.";
+            else if (msgLC.includes("hello") || msgLC.includes("hi")) reply = "Hello! How can I help you today?";
+            else if (msgLC.includes("help")) reply = "I'm here to help! Ask me about your courses, progress, or assignments.";
+            setTimeout(() => {
+                addMessage(reply, 'bot');
+            }, 500);
+        }
+        function addMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chatbot-message ' + sender;
+            msgDiv.innerHTML = text;
+            chatbotBody.appendChild(msgDiv);
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+        chatbotForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const userMsg = chatbotInput.value.trim();
+            if (!userMsg) return;
+            addMessage(userMsg, 'user');
+            chatbotInput.value = '';
+            botReply(userMsg);
         });
     </script>
 </body>
