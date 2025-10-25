@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ topic.title }} | Tansam Learning</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .content {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        h1 { color: #1e3a8a; }
+        p, div { line-height: 1.6; margin-bottom: 1rem; }
+
+        .back-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        .divider {
+            height: 2px;
+            background: #e2e8f0;
+            margin: 1.5rem 0;
+        }
+
+        iframe, video {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <a href="javascript:history.back()" class="back-link">&larr; Back to Course</a>
+        <h1>{{ topic.title }}</h1>
+        <div class="divider"></div>
+        <div>{{ topic.learning_content|safe }}</div>
+
+        {% if topic.assignment %}
+        <div class="divider"></div>
+        <h3>Assignment</h3>
+        <div>{{ topic.assignment|safe }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth import login, get_user_model
+from django.contrib.auth import login, logout, get_user_model
+from django.urls import reverse
 from .models import Progress, Course, Topic, TopicCompletion
 import logging
 
@@ -25,7 +26,7 @@ def login_view(request):
 
     if request.method == 'POST':
         phone_input = request.POST.get('phone')
-      
+
         if not phone_input:
             messages.error(request, 'Please enter a phone number.')
             return render(request, 'login.html', context)
@@ -53,17 +54,21 @@ def login_view(request):
 
         except User.DoesNotExist:
             logger.warning(f"Phone not found in database: {phone}")
-            messages.error(request, 'Your mobile number is not registered. Contact your mentor.', extra_tags='not_registered')
+            messages.error(
+                request,
+                'Your mobile number is not registered. Contact your mentor.',
+                extra_tags='not_registered'
+            )
 
     return render(request, 'login.html', context)
 
 
-from django.contrib.auth import logout
-from django.urls import reverse
+# ------------------- LOGOUT VIEW -------------------
 def logout_view(request):
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
     return redirect(reverse('login'))
+
 
 # ------------------- DASHBOARD VIEW -------------------
 @login_required
@@ -110,3 +115,67 @@ def dashboard_view(request):
         'notifications': 1,
     }
     return render(request, 'dashboard.html', context)
+
+
+# ------------------- COURSE DETAIL VIEW -------------------
+@login_required
+def course_detail_view(request, course_id):
+    """
+    Displays detailed information about a selected course,
+    including its topics, completion status, and progress percentage.
+    """
+    user = request.user
+    course = get_object_or_404(Course, id=course_id)
+    topics = Topic.objects.filter(course=course)
+
+    # Get student's progress record
+    progress = Progress.objects.filter(student=user, course=course).first()
+
+    # Fetch completed topics
+    completed_topics = set()
+    if progress:
+        completed_topics = set(
+            TopicCompletion.objects.filter(progress=progress, completed=True)
+            .values_list('topic_id', flat=True)
+        )
+
+    # Calculate progress percentage
+    total_topics = topics.count()
+    completed_count = len(completed_topics)
+    course_progress_percent = (completed_count / total_topics) * 100 if total_topics > 0 else 0
+
+    context = {
+        'course': course,
+        'topics': topics,
+        'progress': progress,
+        'completed_topics': completed_topics,
+        'course_progress_percent': round(course_progress_percent, 1),
+    }
+    return render(request, 'course_detail.html', context)
+
+
+# ------------------- TOPIC DETAIL VIEW -------------------
+@login_required
+def topic_detail_view(request, topic_id):
+    """
+    Displays full study content and assignment for a single topic.
+    """
+    topic = get_object_or_404(Topic, id=topic_id)
+    course = topic.course
+    user = request.user
+
+    # Ensure only enrolled students can access
+    progress = Progress.objects.filter(student=user, course=course).first()
+    if not progress:
+        messages.warning(request, "You are not enrolled in this course.")
+        return redirect('dashboard')
+
+    # Optional: Track when a topic is viewed
+    TopicCompletion.objects.get_or_create(progress=progress, topic=topic, defaults={'completed': False})
+
+    context = {
+        'topic': topic,
+        'course': course,
+        'progress': progress,
+    }
+    return render(request, 'topic_detail.html', context)

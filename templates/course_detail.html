@@ -1,48 +1,171 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{{ course.title }} - Topics</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.title }} | Course Details</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
-        body { font-family: sans-serif; background: #f9fafb; color: #1e3a8a; margin:0; }
-        .container { max-width: 900px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 10px; }
-        h1 { color: #1e3a8a; }
-        .topic-card { margin-bottom: 2rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #f3f4f6; padding: 1rem 1.5rem;}
-        .topic-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; }
-        .topic-section { margin-bottom: 1rem; }
-        .back-link { display:inline-block; margin-bottom: 1rem; color: #1e3a8a; text-decoration: underline; }
+        body {
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #1e3a8a;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 0.5rem;
+        }
+        .sidebar a {
+            color: #e0e7ff;
+            text-decoration: none;
+            margin: 0.5rem 0;
+            padding: 0.6rem;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Main content */
+        .content {
+            flex-grow: 1;
+            padding: 2rem 3rem;
+        }
+
+        .course-header {
+            background: #fff;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        .course-header h1 {
+            color: #1e3a8a;
+            font-size: 1.8rem;
+        }
+        .course-header p {
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        /* Topic cards */
+        .topic-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .topic-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+        }
+        .topic-card h3 {
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+        }
+        .topic-section p {
+            margin: 0.4rem 0;
+            color: #475569;
+        }
+
+        .no-data {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            margin-top: 0.8rem;
+            padding: 0.5rem 1rem;
+            background: #1e3a8a;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #3747c7;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="{% url 'dashboard' %}" class="back-link">&larr; Back to Dashboard</a>
-        <h1>{{ course.title }}</h1>
-        <p>{{ course.description }}</p>
-        {% for topic in topics %}
-        <div class="topic-card">
-            <div class="topic-title">{{ topic.title }}</div>
-            <div class="topic-section">
-                <strong>Learning:</strong>
-                <div>{{ topic.learning_content|safe }}</div>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>{{ course.title }}</h2>
+            <a href="{% url 'dashboard' %}">🏠 Dashboard</a>
+            <a href="#">📚 All Topics</a>
+            <a href="#">🧠 Assignments</a>
+            <a href="#">❓ MCQs</a>
+            <a href="#">📈 Progress</a>
+            <a href="#">⚙️ Settings</a>
+        </aside>
+
+        <!-- Main content -->
+        <main class="content">
+            <div class="course-header">
+                <h1>{{ course.title }}</h1>
+                <p>{{ course.description }}</p>
             </div>
-            <div class="topic-section">
-                <strong>Assignment:</strong>
-                <div>{{ topic.assignment|safe }}</div>
+
+            {% for topic in topics %}
+            <div class="topic-card">
+                <h3>{{ topic.title }}</h3>
+                <div class="topic-section">
+                    <p><strong>Learning Material:</strong>
+                        {% if topic.material %}
+                            <a href="{{ topic.material.url }}" class="btn">View Material</a>
+                        {% else %}
+                            <span class="no-data">No material available</span>
+                        {% endif %}
+                    </p>
+
+                    <p><strong>Assignment:</strong>
+                        {% if topic.assignment %}
+                            <a href="{{ topic.assignment.url }}" class="btn">View Assignment</a>
+                        {% else %}
+                            <span class="no-data">None</span>
+                        {% endif %}
+                    </p>
+
+                    <p><strong>MCQs:</strong>
+                        {% if topic.mcqs %}
+                            <a href="{{ topic.mcqs.url }}" class="btn">Start Quiz</a>
+                        {% else %}
+                            <span class="no-data">No MCQs available</span>
+                        {% endif %}
+                    </p>
+                </div>
             </div>
-            <div class="topic-section">
-                <strong>MCQ:</strong>
-                <ul>
-                {% for mcq in topic.mcq_set.all %}
-                    <li>{{ mcq.question }}</li>
-                {% empty %}
-                    <li>No MCQs for this topic.</li>
-                {% endfor %}
-                </ul>
-            </div>
-        </div>
-        {% empty %}
-        <p>No topics for this course yet.</p>
-        {% endfor %}
+            {% empty %}
+            <p class="no-data">No topics available for this course.</p>
+            {% endfor %}
+        </main>
     </div>
 </body>
 </html>
