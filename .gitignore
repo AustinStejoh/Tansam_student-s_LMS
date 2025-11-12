@@ -48,3 +48,10 @@ build/
 dist/
 *.egg-info/
 *.egg/
+
+# Node.js and Frontend (React)
+node_modules/
+frontend/node_modules/
+npm-debug.log
+yarn-error.log
+.DS_Store

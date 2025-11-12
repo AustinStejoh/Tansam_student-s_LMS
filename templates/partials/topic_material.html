@@ -1,0 +1,46 @@
+<!-- templates/partials/_topic_material.html -->
+<div class="topic-material">
+    <h3>{{ topic.title }}</h3>
+    
+    <!-- Teaching Part (Video/PDF) -->
+    <div class="teaching-part">
+        <h4>Teaching Material</h4>
+        {% if topic.video_file %}
+            <video controls style="width: 100%; max-width: 600px;">
+                <source src="{{ topic.video_file.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% endif %}
+        {% if topic.ppt_file %}
+            <a href="{{ topic.ppt_file.url }}" download class="download-link">📄 Download PPT</a>
+        {% endif %}
+        <p>{{ topic.content|default:"No additional notes." }}</p>
+    </div>
+
+    <!-- Assignment Part -->
+    <div class="assignment-part">
+        <h4>Assignment</h4>
+        <p>{{ topic.assignment|default:"No assignment available." }}</p>
+        <!-- Add form for assignment submission here if needed -->
+    </div>
+
+    <!-- MCQ Part -->
+    <div class="mcq-part">
+        <h4>MCQ/Quiz</h4>
+        <!-- Add MCQ form here -->
+        <p>Quiz content goes here.</p>
+    </div>
+</div>
+
+<style>
+.download-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #2D6B5A;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 0.5rem 0;
+}
+.topic-material h4 { color: #1E3A8A; margin-top: 1.5rem; }
+</style>

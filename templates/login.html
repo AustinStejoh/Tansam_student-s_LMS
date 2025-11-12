@@ -108,6 +108,8 @@
             <input type="text" name="phone" placeholder="Phone Number (e.g., +91xxxxxxxxxx)"
                    value="{{ request.POST.phone|default:'' }}" required
                    aria-label="Enter your phone number" autofocus>
+            <input type="password" name="password" placeholder="Password (if assigned)"
+                   value="" aria-label="Enter your password (if you have one)">
             <button type="submit" aria-label="Submit login">Login</button>
         </form>
     </div>

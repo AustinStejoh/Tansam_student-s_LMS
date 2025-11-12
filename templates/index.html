@@ -6,6 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tansam School</title>
     <style>
+        :root {
+            --brand-900: #0f2557;
+            --brand-800: #1e3a8a;
+            --accent-600: #d97706;
+            --accent-700: #b45309;
+            --surface: #ffffff;
+            --surface-2: #f8f9fb;
+            --text: #1a1a1a;
+            --muted: #4a4a4a;
+            --border: #e5e7eb;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -13,16 +24,18 @@
         }
         
         body {
-            font-family: 'Baskerville', 'Garamond', 'Georgia', serif;
+            font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
             line-height: 1.8;
-            color: #1a1a1a;
-            background-color: #fafaf8;
+            color: var(--text);
+            background: radial-gradient(1200px 600px at 10% -10%, #eef2ff 0%, transparent 60%),
+                        radial-gradient(900px 500px at 110% 10%, #fef3c7 0%, transparent 55%),
+                        #fafaf8;
             overflow-x: hidden;
         }
         
         /* Header */
         header {
-            background: linear-gradient(135deg, #0f2557 0%, #1e3a8a 100%);
+            background: linear-gradient(135deg, var(--brand-900) 0%, var(--brand-800) 100%);
             color: white;
             padding: 1.5rem 0;
             position: sticky;
@@ -53,18 +66,14 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
-        .logo-section h1 {
-            font-size: 1.8rem;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            font-family: 'Garamond', 'Georgia', serif;
-        }
+        .logo-section h1 { font-size: 1.6rem; font-weight: 600; letter-spacing: 0.2px; }
         
         header nav {
             display: flex;
             gap: 2rem;
             align-items: center;
         }
+        .nav-toggle { display:none; background: transparent; border: 0; color: #fff; font-size: 1.6rem; cursor: pointer; }
         
         header nav a {
             color: white;
@@ -83,19 +92,31 @@
         }
         
         header nav a.login-btn {
-            background-color: #d97706;
-            border: 2px solid #d97706;
+            background-color: var(--accent-600);
+            border: 2px solid var(--accent-600);
         }
         
         header nav a.login-btn:hover {
-            background-color: #b45309;
-            border-color: #b45309;
+            background-color: var(--accent-700);
+            border-color: var(--accent-700);
         }
+        
+        header nav a.admin-login-btn {
+            background-color: var(--brand-900);
+            border: 2px solid var(--brand-900);
+        }
+        
+        header nav a.admin-login-btn:hover {
+            background-color: var(--brand-800);
+            border-color: var(--brand-800);
+        }
+        
+        .theme-btn { border: 1px solid rgba(255,255,255,0.35); padding: 0.45rem 0.85rem; border-radius: 999px; font-size: 0.95rem; }
         
         /* Hero Section */
         .hero {
-            background-color: #fff;
-            border-bottom: 3px solid #e5e7eb;
+            background-color: var(--surface);
+            border-bottom: 3px solid var(--border);
         }
         
         .carousel {
@@ -123,7 +144,7 @@
         .carousel .slide.prev { left: -100%; }
         
         .slide-content {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.92);
             padding: 3.5rem 3rem;
             border-radius: 2px;
             max-width: 700px;
@@ -133,9 +154,9 @@
         }
         
         .slide-content h2 {
-            font-size: 2.8rem;
+            font-size: 2.6rem;
             margin-bottom: 1.5rem;
-            color: #0f2557;
+            color: var(--brand-900);
             font-weight: 400;
             line-height: 1.3;
             letter-spacing: -0.5px;
@@ -240,7 +261,7 @@
         
         .section h2 {
             font-size: 2.5rem;
-            color: #0f2557;
+            color: var(--brand-900);
             font-weight: 400;
             margin-bottom: 1rem;
             letter-spacing: -0.5px;
@@ -262,8 +283,8 @@
         /* About Section */
         .about {
             background-color: white;
-            border-top: 1px solid #e5e7eb;
-            border-bottom: 1px solid #e5e7eb;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
         
         .about-content {
@@ -303,7 +324,7 @@
             border-radius: 2px;
             box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
             text-align: center;
-            border: 1px solid #e5e7eb;
+            border: 1px solid var(--border);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -337,7 +358,7 @@
         
         .feature-card h3 {
             font-size: 1.5rem;
-            color: #0f2557;
+            color: var(--brand-900);
             margin-bottom: 1rem;
             font-weight: 500;
             letter-spacing: 0.3px;
@@ -350,9 +371,7 @@
         }
         
         /* Testimonials Section */
-        .testimonials-section {
-            background-color: #f8f9fa;
-        }
+        .testimonials-section { background-color: var(--surface-2); }
         
         .testimonials {
             display: grid;
@@ -403,7 +422,7 @@
         
         /* Footer */
         footer {
-            background: linear-gradient(135deg, #0f2557 0%, #1e3a8a 100%);
+            background: linear-gradient(135deg, var(--brand-900) 0%, var(--brand-800) 100%);
             color: white;
             padding: 3rem 2rem 2rem;
             margin-top: 0;
@@ -441,6 +460,16 @@
             margin: 1.5rem auto;
         }
         
+        /* Dark theme */
+        body[data-theme="dark"] { background: #0b1220; color: #e6e6e6; }
+        body[data-theme="dark"] .hero { background-color: #0e1526; border-bottom-color: #17203a; }
+        body[data-theme="dark"] .slide-content { background: rgba(14,21,38,0.85); color: #e6e6e6; border-color: rgba(255,255,255,0.06); }
+        body[data-theme="dark"] .section h2 { color: #dbe5ff; }
+        body[data-theme="dark"] .feature-card { background-color: #0f172a; border-color: #1f2a44; }
+        body[data-theme="dark"] .feature-card p { color: #c6cbe0; }
+        body[data-theme="dark"] .testimonials-section { background: #0e1526; }
+        body[data-theme="dark"] .about { background: #0f172a; border-color: #1f2a44; }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .header-container {
@@ -452,11 +481,10 @@
                 font-size: 1.5rem;
             }
             
-            header nav {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 1rem;
-            }
+            .nav-toggle { display:block; }
+            header nav { position: relative; width: 100%; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+            header nav.collapsed a { display:none; }
+            header nav.collapsed .theme-btn { display:none; }
             
             .carousel {
                 height: 400px;
@@ -500,11 +528,14 @@
                 <img src="{% static 'images/img.png' %}" alt="Tansam School Logo" >
                 <h1>Tansam School</h1>
             </div>
-            <nav>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle Menu">☰</button>
+            <nav id="mainNav" class="collapsed">
                 <a href="#about">About</a>
                 <a href="#features">Features</a>
                 <a href="#testimonials">Testimonials</a>
-                <a href="/login/" class="login-btn">Login</a>
+                <a href="/login/" class="login-btn">Student Login</a>
+                <a href="/panel/login/" class="login-btn admin-login-btn">Admin Login</a>
+                <a href="#" id="themeToggle" class="theme-btn" aria-label="Toggle theme">🌙</a>
             </nav>
         </div>
     </header>
@@ -537,6 +568,53 @@
             <button class="carousel-btn next" id="carouselNext" aria-label="Next">›</button>
 
             <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+    </section>
+
+    <!-- Modern Stats Strip -->
+    <section class="section" aria-labelledby="statsHeading" style="padding-top:2rem;padding-bottom:2rem;">
+        <div class="section-header" style="margin-bottom:1rem;">
+            <h2 id="statsHeading">Platform at a glance</h2>
+        </div>
+        <div class="stats-strip" style="max-width:1100px;margin:0 auto;display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:0 2rem;">
+            <div class="stat-card" style="flex:1;min-width:220px;padding:1.25rem 1.5rem;border-radius:12px;background:linear-gradient(180deg,#ffffff,#fbfdff);box-shadow:0 8px 24px rgba(16,24,40,0.06);">
+                <div style="display:flex;align-items:center;gap:1rem;">
+                    <div style="width:54px;height:54px;border-radius:12px;background:linear-gradient(90deg,#0f2557,#667eea);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;">🎓</div>
+                    <div>
+                        <div style="font-size:0.95rem;color:#374151;font-weight:700;">Students Enrolled</div>
+                        <div style="font-size:1.45rem;font-weight:800;color:#0f2557;" data-counter="students">{{ students_count|default:1200 }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card" style="flex:1;min-width:220px;padding:1.25rem 1.5rem;border-radius:12px;background:linear-gradient(180deg,#ffffff,#fbfdff);box-shadow:0 8px 24px rgba(16,24,40,0.06);">
+                <div style="display:flex;align-items:center;gap:1rem;">
+                    <div style="width:54px;height:54px;border-radius:12px;background:linear-gradient(90deg,#d97706,#f59e0b);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;">📚</div>
+                    <div>
+                        <div style="font-size:0.95rem;color:#374151;font-weight:700;">Courses</div>
+                        <div style="font-size:1.45rem;font-weight:800;color:#b45309;" data-counter="courses">{{ courses_count|default:24 }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card" style="flex:0 0 220px;min-width:220px;padding:1rem;border-radius:12px;background:linear-gradient(180deg,#ffffff,#fbfdff);box-shadow:0 8px 24px rgba(16,24,40,0.06);display:flex;align-items:center;gap:1rem;justify-content:space-between;">
+                <div style="flex:1;">
+                    <div style="font-size:0.95rem;color:#374151;font-weight:700;">Overall Completion</div>
+                    <div style="font-size:1.25rem;font-weight:800;color:#065f46;"> <span id="completionPercent">{{ overall_completion_percentage|default:68 }}%</span></div>
+                </div>
+                <div style="width:72px;height:72px;display:flex;align-items:center;justify-content:center;">
+                    <!-- SVG circular progress, percent pulled from data-percent attribute fallback -->
+                    <svg viewBox="0 0 36 36" class="circular-chart" data-percent="{{ overall_completion_percentage|default:68 }}" width="72" height="72" aria-hidden="true">
+                        <path class="circle-bg" d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#eee" stroke-width="2.5"/>
+                        <path class="circle" stroke-linecap="round" d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="0,100"/>
+                        <text x="18" y="20.35" class="percentage" text-anchor="middle" font-size="6" fill="#065f46">0%</text>
+                    </svg>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -636,6 +714,24 @@
 
             sections.forEach(section => observer.observe(section));
 
+            // Mobile nav toggle
+            const navToggle = document.getElementById('navToggle');
+            const mainNav = document.getElementById('mainNav');
+            navToggle.addEventListener('click', ()=> mainNav.classList.toggle('collapsed'));
+
+            // Theme toggle with persistence
+            const themeToggle = document.getElementById('themeToggle');
+            const setTheme = (t)=> document.body.setAttribute('data-theme', t);
+            const stored = localStorage.getItem('theme');
+            if (stored) setTheme(stored);
+            themeToggle.addEventListener('click', (e)=>{
+                e.preventDefault();
+                const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                if (next === 'light') document.body.removeAttribute('data-theme'); else setTheme('dark');
+                localStorage.setItem('theme', next);
+                themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+            });
+
             // Carousel
             const carousel = document.getElementById('heroCarousel');
             if (!carousel) return;
@@ -680,6 +776,55 @@
             goTo(0);
             startTimer();
         });
+    </script>
+    <script>
+        // Landing page counters and circular progress animation
+        (function(){
+            function animateCounter(el, to, duration){
+                const start = 0;
+                const change = to - start;
+                const startTime = performance.now();
+                function step(now){
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    el.textContent = Math.floor(start + change * progress).toLocaleString();
+                    if(progress < 1) requestAnimationFrame(step);
+                }
+                requestAnimationFrame(step);
+            }
+
+            // counters
+            const studentsEl = document.querySelector('[data-counter="students"]');
+            const coursesEl = document.querySelector('[data-counter="courses"]');
+            if(studentsEl) animateCounter(studentsEl, parseInt(studentsEl.textContent.replace(/,/g,'')) || 0, 1200);
+            if(coursesEl) animateCounter(coursesEl, parseInt(coursesEl.textContent.replace(/,/g,'')) || 0, 1000);
+
+            // circular progress
+            const chart = document.querySelector('.circular-chart');
+            if(chart){
+                const percent = parseInt(chart.getAttribute('data-percent')) || 0;
+                const circle = chart.querySelector('.circle');
+                const text = chart.querySelector('.percentage');
+                const radius = 15.9155; // as used in path
+                const circumference = 100; // normalized for viewBox scaling
+                const dash = Math.max(0, Math.min(100, percent));
+                // animate dash
+                let start = 0;
+                const dur = 1200;
+                const t0 = performance.now();
+                function animate(now){
+                    const elapsed = Math.min(dur, now - t0);
+                    const prog = elapsed / dur;
+                    const current = Math.floor(prog * dash);
+                    const dashVal = `${current},100`;
+                    circle.setAttribute('stroke-dasharray', dashVal);
+                    text.textContent = current + '%';
+                    if(elapsed < dur) requestAnimationFrame(animate);
+                }
+                // kickoff after small delay for nicer effect
+                setTimeout(()=> requestAnimationFrame(animate), 250);
+            }
+        })();
     </script>
 </body>
 </html>

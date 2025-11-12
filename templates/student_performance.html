@@ -1,0 +1,440 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ student.name }} - Performance Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+        
+        .navbar-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+        
+        .navbar a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: background 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #764ba2;
+        }
+        
+        .student-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .info-item {
+            border-left: 4px solid #667eea;
+            padding-left: 1rem;
+        }
+        
+        .info-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .card h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+        
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-bar label {
+            font-weight: 600;
+            min-width: 150px;
+        }
+        
+        .bar {
+            flex: 1;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        
+        .bar-text {
+            font-weight: 700;
+            min-width: 50px;
+            text-align: right;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-box .number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-box .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #6b7280;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>📊 Student Performance</h1>
+        <div class="navbar-links">
+            <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+            <a href="{% url 'manage_students' %}">Students</a>
+            <a href="{% url 'admin_logout' %}">Logout</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <a href="{% url 'manage_students' %}" class="back-btn">← Back to Students</a>
+        
+        <div class="student-header">
+            <h2 style="margin-bottom: 1.5rem; font-size: 2rem;">{{ student.name }}</h2>
+            <div class="student-info">
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value" style="font-size: 1rem;">{{ student.email }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Phone</div>
+                    <div class="info-value" style="font-size: 1rem;">{{ student.phone }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Class Level</div>
+                    <div class="info-value" style="font-size: 1rem;">{{ student.get_class_level_display }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Payment Status</div>
+                    <div class="info-value" style="font-size: 0.9rem;">
+                        {% if student.payment_status %}
+                        <span class="badge badge-success">Paid</span>
+                        {% else %}
+                        <span class="badge badge-pending">Pending</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📈 Overall Progress</h3>
+            <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;">
+                <div style="flex:1;min-width:220px;">
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="number">{{ completed_topics }}</div>
+                            <div class="label">Topics Completed</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="number">{{ total_topics }}</div>
+                            <div class="label">Total Topics</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="number">{{ completion_percentage|default:0 }}%</div>
+                            <div class="label">Completion Rate</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="number">{{ progress.progress|default:0 }}%</div>
+                            <div class="label">Overall Progress</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:140px; height:140px; display:flex; align-items:center; justify-content:center;">
+                    <canvas id="studentChart" width="140" height="140"></canvas>
+                </div>
+            </div>
+            
+            
+            {% if progress %}
+            <div class="progress-bar">
+                <label>Overall Progress:</label>
+                <div class="bar">
+                    <div class="bar-fill" style="width: {{ progress.progress }}%;"></div>
+                </div>
+                <div class="bar-text">{{ progress.progress }}%</div>
+            </div>
+            
+            <div class="progress-bar">
+                <label>STEM Progress:</label>
+                <div class="bar">
+                    <div class="bar-fill" style="width: {{ progress.stem_progress }}%;"></div>
+                </div>
+                <div class="bar-text">{{ progress.stem_progress }}%</div>
+            </div>
+            
+            <div class="progress-bar">
+                <label>Impact Progress:</label>
+                <div class="bar">
+                    <div class="bar-fill" style="width: {{ progress.impact_progress }}%;"></div>
+                </div>
+                <div class="bar-text">{{ progress.impact_progress }}%</div>
+            </div>
+            {% endif %}
+        </div>
+    
+        <!-- Chart.js for student charts -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+        (function(){
+            const total = {{ total_topics|default:0 }};
+            const completed = {{ completed_topics|default:0 }};
+            const remaining = Math.max(total - completed, 0);
+
+            const ctx = document.getElementById('studentChart');
+            if (ctx && typeof Chart !== 'undefined') {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Completed', 'Remaining'],
+                        datasets: [{
+                            data: total > 0 ? [completed, remaining] : [1, 0],
+                            backgroundColor: ['#6366f1', '#e5e7eb'],
+                            hoverOffset: 6,
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: true }
+                        }
+                    }
+                });
+            }
+        })();
+        </script>
+        
+        {% if courses_stats %}
+        <h3 class="section-title">📚 Course-wise Progress</h3>
+        
+        {% for course_stat in courses_stats %}
+        <div class="card">
+            <h3>{{ course_stat.course.title }}</h3>
+            
+            <div class="progress-bar">
+                <label>Completion:</label>
+                <div class="bar">
+                       <div class="bar-fill" style="width: {{ course_stat.percentage }}%;"></div>
+                </div>
+                <div class="bar-text">{{ course_stat.completed }}/{{ course_stat.total }}</div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Topic</th>
+                        <th style="text-align: center;">Video Watched</th>
+                        <th style="text-align: center;">MCQ Passed</th>
+                        <th style="text-align: center;">Assignment Submitted</th>
+                        <th style="text-align: center;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for completion in course_stat.completions %}
+                    <tr>
+                        <td><strong>{{ completion.topic.title }}</strong></td>
+                        <td style="text-align: center;">
+                            {% if completion.video_watched %}
+                            <span class="badge badge-success">✓ Yes</span>
+                            {% else %}
+                            <span class="badge badge-pending">✗ No</span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center;">
+                            {% if completion.mcq_passed %}
+                            <span class="badge badge-success">✓ Yes</span>
+                            {% else %}
+                            <span class="badge badge-pending">✗ No</span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center;">
+                            {% if completion.assignment_submitted %}
+                            <span class="badge badge-success">✓ Yes</span>
+                            <div style="font-size: 0.85rem; margin-top: 0.25rem;">Score: {{ completion.assignment_score|default:"N/A" }}</div>
+                            {% else %}
+                            <span class="badge badge-pending">✗ No</span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center;">
+                            {% if completion.completed %}
+                            <span class="badge badge-success">✓ Completed</span>
+                            {% else %}
+                            <span class="badge badge-pending">⏳ In Progress</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="card">
+            <div class="empty-state">
+                <p>No course progress data available yet.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

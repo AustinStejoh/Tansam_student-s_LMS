@@ -1,3 +1,5 @@
+from django.urls import path
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -5,6 +7,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('panel/', include('admin_panel.urls')),
     path('accounts/', include('accounts.urls')),  # Ensure this matches
     path('', include('core.urls')),
 ]

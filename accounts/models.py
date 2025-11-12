@@ -66,6 +66,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     payment_status = models.BooleanField(default=False, help_text='Indicates if the student has paid for access')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    password_set = models.BooleanField(default=False, help_text='Whether admin has set a password for this student')
 
     # Progress tracking fields (non-negative integers)
     progress = models.PositiveIntegerField(default=0, help_text='Overall progress percentage (0-100)')

@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assignments</title>
+  <style>
+    :root { --brand:#1e3a8a; --muted:#475569; --border:#e5e7eb; }
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:#f8fafc; color:#1e293b; margin:0; }
+    .wrap { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.6rem; color: var(--brand); margin: 0 0 1rem 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+    .card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1rem; box-shadow:0 4px 10px rgba(0,0,0,.05); display:flex; flex-direction:column; }
+    .card h3 { margin:.2rem 0 .4rem 0; font-size:1.05rem; }
+    .muted { color:var(--muted); font-size:.92rem; }
+    .meta { display:flex; justify-content:space-between; align-items:center; margin-top:.6rem; font-size:.9rem; }
+    .btn { display:inline-block; margin-top:.8rem; padding:.55rem .9rem; background:var(--brand); color:#fff; text-decoration:none; border-radius:8px; font-weight:600; text-align:center; }
+    .btn:hover { background:#3747c7; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Assignments{% if course %} – {{ course.title }}{% endif %}</h1>
+    {% if assignments %}
+    <div class="grid">
+      {% for a in assignments %}
+      <div class="card">
+        <h3>{{ a.title }}</h3>
+        <div class="muted">{{ a.description|truncatechars:140 }}</div>
+        <div class="meta">
+          <span>Due: {{ a.due_date|date:'Y-m-d H:i' }}</span>
+          {% if a.file %}<a class="btn" href="{{ a.file.url }}" download>Download</a>{% endif %}
+        </div>
+        <form method="post" enctype="multipart/form-data" style="margin-top:.8rem;">
+          {% csrf_token %}
+          <input type="hidden" name="assignment_id" value="{{ a.id }}" />
+          <input type="file" name="submitted_file" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*" required />
+          <button type="submit" class="btn">Submit</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+      <p class="muted">No assignments found.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
+
+

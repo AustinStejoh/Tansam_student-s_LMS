@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Grading Dashboard</title>
+    <link rel="stylesheet" href="{% static 'assignments/css/assignment.css' %}">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-container">
+        <h1>Grading Dashboard</h1>
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Assignment</th>
+                    <th>Student</th>
+                    <th>Submitted At</th>
+                    <th>Late?</th>
+                    <th>Grade</th>
+                    <th>Reviewed</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                <tr>
+                    <td>{{ submission.assignment.title }}</td>
+                    <td>{{ submission.student.username }}</td>
+                    <td>{{ submission.submitted_at|date:"M d, Y H:i" }}</td>
+                    <td>{% if submission.is_late %}❌{% else %}✅{% endif %}</td>
+                    <td>{{ submission.grade|default:"-" }}</td>
+                    <td>{% if submission.reviewed %}✔{% else %}✖{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">No submissions yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

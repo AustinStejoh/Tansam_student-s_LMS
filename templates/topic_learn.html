@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Learn: {{ topic.title }}</title>
+  <!-- Plyr CSS -->
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+  <style>
+    body { font-family: Poppins, sans-serif; background:#f8fafc; margin:0; padding:2rem; color:#1e293b; }
+    .container { max-width: 1000px; margin: auto; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+    .back { color:#2563eb; text-decoration:none; display:inline-block; margin-bottom:1rem; }
+    .player-wrap { margin: 1rem 0 1.5rem 0; }
+    .muted { color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="javascript:window.close();">Close</a>
+    <h1>{{ topic.title }}</h1>
+    <div>
+      <!-- Learning content -->
+      {{ topic.learning_content|safe }}
+    </div>
+
+    {% if topic.video_file %}
+    <div class="player-wrap">
+      <p class="muted">Lesson Video</p>
+      <video id="player" controls playsinline crossorigin preload="metadata">
+        <source src="{{ topic.video_file.url }}" type="video/mp4">
+        Your browser does not support the video element.
+      </video>
+    </div>
+    {% endif %}
+
+    {% if topic.assignment %}
+    <hr/>
+    <h3>Assignment</h3>
+    <div>{{ topic.assignment|safe }}</div>
+    {% endif %}
+  </div>
+  <!-- Plyr JS -->
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const el = document.getElementById('player');
+      if (el) {
+        const player = new Plyr(el, { controls: ['play','progress','current-time','mute','volume','settings','fullscreen'], settings: ['quality','speed'] });
+        // try to autoplay muted (browsers may block autoplay)
+        player.muted = false;
+      }
+    });
+  </script>
+</body>
+</html>

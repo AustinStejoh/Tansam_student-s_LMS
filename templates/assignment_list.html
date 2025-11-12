@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Assignments - {{ topic.title }}</h2>
+    
+    {% for item in assignments %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.assignment.title }}</h5>
+                <p class="card-text">{{ item.assignment.description }}</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Due Date:</strong> {{ item.assignment.due_date }}</p>
+                        <p><strong>Max Score:</strong> {{ item.assignment.max_score }}</p>
+                        {% if item.assignment.file_attachment %}
+                            <p><strong>Assignment File:</strong> 
+                                <a href="{{ item.assignment.file_attachment.url }}" target="_blank">
+                                    Download Assignment
+                                </a>
+                            </p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {% if item.submission %}
+                            <div class="alert {% if item.submission.is_late %}alert-warning{% else %}alert-info{% endif %}">
+                                <p><strong>Status:</strong> {{ item.submission.status }}</p>
+                                <p><strong>Submitted:</strong> {{ item.submission.submitted_at }}</p>
+                                {% if item.submission.score %}
+                                    <p><strong>Score:</strong> {{ item.submission.score }}/{{ item.assignment.max_score }}</p>
+                                {% endif %}
+                                {% if item.submission.feedback %}
+                                    <p><strong>Feedback:</strong> {{ item.submission.feedback }}</p>
+                                {% endif %}
+                            </div>
+                            {% if item.submission.status != 'graded' %}
+                                <a href="{% url 'submit_assignment' item.assignment.id %}" class="btn btn-warning">
+                                    Resubmit
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'submit_assignment' item.assignment.id %}" class="btn btn-primary">
+                                Submit Assignment
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">
+            No assignments available for this topic yet.
+        </div>
+    {% endfor %}
+    
+    <a href="{% url 'topic_detail' topic.id %}" class="btn btn-secondary">Back to Topic</a>
+</div>
+{% endblock %}

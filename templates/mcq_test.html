@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>MCQ Test - {{ test.topic.title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for test_question in questions %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Question {{ forloop.counter }}</h5>
+                    <p class="card-text">{{ test_question.question.question_text }}</p>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ test_question.id }}" value="1" required>
+                        <label class="form-check-label">{{ test_question.question.option_1 }}</label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ test_question.id }}" value="2">
+                        <label class="form-check-label">{{ test_question.question.option_2 }}</label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ test_question.id }}" value="3">
+                        <label class="form-check-label">{{ test_question.question.option_3 }}</label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ test_question.id }}" value="4">
+                        <label class="form-check-label">{{ test_question.question.option_4 }}</label>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        
+        <button type="submit" class="btn btn-primary">Submit Test</button>
+    </form>
+</div>
+{% endblock %}

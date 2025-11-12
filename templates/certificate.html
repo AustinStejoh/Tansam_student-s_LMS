@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate - {{ course.title }}</title>
+    <style>
+        body { font-family: Georgia, 'Times New Roman', serif; background:#f3f4f6; margin:0; padding:2rem; }
+        .certificate { max-width: 900px; margin: 0 auto; background: #fff; padding: 3rem 2.5rem; border: 8px solid #e5e7eb; position: relative; }
+        .certificate:before { content:''; position:absolute; inset:14px; border: 2px dashed #e5e7eb; }
+        h1 { text-align:center; font-size: 2.2rem; margin:0; color:#111827; letter-spacing: 2px; }
+        h2 { text-align:center; font-size: 1.1rem; color:#6b7280; margin-top:.35rem; }
+        .name { text-align:center; font-size: 2rem; font-weight:700; margin: 1.25rem 0; color:#1f2937; }
+        .course { text-align:center; font-size: 1.1rem; color:#374151; }
+        .footer { display:flex; justify-content:space-between; margin-top: 3rem; color:#374151; }
+        .sig { border-top: 1px solid #9ca3af; padding-top:.35rem; }
+        .btn { display:inline-block; margin-top:1rem; background:#1e3a8a; color:#fff; text-decoration:none; padding:.6rem 1rem; border-radius:8px; }
+        .center { text-align:center; }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <h1>Certificate of Completion</h1>
+        <h2>Presented to</h2>
+        <div class="name">{{ student.name }}</div>
+        <div class="course">for successfully completing the course <strong>{{ course.title }}</strong> and passing the final assessment with a score of <strong>{{ progress.final_exam_score|floatformat:0 }}%</strong>.</div>
+        <div class="course center" style="margin-top: .5rem;">Date: {{ progress.certificate_issued_at|date:"F d, Y" }}</div>
+        <div class="footer">
+            <div class="sig">Instructor Signature</div>
+            <div class="sig">Director Signature</div>
+        </div>
+        <div class="center">
+            <a href="#" class="btn" onclick="window.print(); return false;">Print / Save as PDF</a>
+        </div>
+    </div>
+</body>
+</html>
+

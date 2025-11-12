@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Submit Assignment - {{ assignment.title }}</h2>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Assignment Details</h5>
+            <p>{{ assignment.description }}</p>
+            <p><strong>Due Date:</strong> {{ assignment.due_date }}</p>
+            <p><strong>Max Score:</strong> {{ assignment.max_score }}</p>
+            
+            {% if assignment.file_attachment %}
+                <p>
+                    <strong>Assignment File:</strong>
+                    <a href="{{ assignment.file_attachment.url }}" target="_blank">Download Assignment</a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if existing_submission %}
+        <div class="alert alert-info">
+            <h5>Previous Submission</h5>
+            <p><strong>Submitted:</strong> {{ existing_submission.submitted_at }}</p>
+            <p><strong>Status:</strong> {{ existing_submission.status }}</p>
+            {% if existing_submission.feedback %}
+                <p><strong>Feedback:</strong> {{ existing_submission.feedback }}</p>
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    <div class="card">
+        <div class="card-body">
+            <h5>Submit Your Work</h5>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="submission_file">Upload Your File</label>
+                    <input type="file" class="form-control-file" id="submission_file" name="submission_file" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary mt-3">
+                    {% if existing_submission %}
+                        Resubmit Assignment
+                    {% else %}
+                        Submit Assignment
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <a href="{% url 'assignment_list' assignment.topic.id %}" class="btn btn-secondary mt-3">Back to Assignments</a>
+</div>
+{% endblock %}

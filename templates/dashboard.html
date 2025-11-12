@@ -235,13 +235,46 @@
                             <div class="progress-bar-container"><div class="progress-bar" style="width: {{ overall_progress|default:0 }}%"></div></div>
                         </div>
                         <div class="progress-card success">
-                            <div class="progress-card-header"><span>Assignments Submitted</span><span>--%</span></div>
-                            <div class="progress-bar-container"><div class="progress-bar success" style="width: 0%"></div></div>
+                            <div class="progress-card-header"><span>Assignments Submitted</span><span>{{ assignment_submission_rate|default:0 }}%</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar success" style="width: {{ assignment_submission_rate|default:0 }}%"></div></div>
+                            <div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">{{ submitted_count|default:0 }}/{{ total_assignments|default:0 }} assignments</div>
                         </div>
-                        <div class="progress-card warning">
-                            <div class="progress-card-header"><span>Average Grade</span><span>--</span></div>
-                            <div class="progress-bar-container"><div class="progress-bar warning" style="width: 0%"></div></div>
+            <div class="progress-card warning">
+                <div class="progress-card-header"><span>Average Grade</span><span>{{ avg_grade|default:"--" }}</span></div>
+                <div class="progress-bar-container"><div class="progress-bar warning" style="width: {% if avg_grade %}{{ avg_grade }}{% else %}0{% endif %}%"></div></div>
+                <div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">Based on graded submissions</div>
+            </div>
+        </div>
+
+        <div class="progress-grid" style="margin-top:1rem;">
+            <div class="progress-card">
+                <div class="progress-card-header"><span>Final Exam</span>
+                    <span>
+                        {% if progress_records %}
+                            {% with any_pass=0 %}
+                                {% for pr in progress_records %}{% if pr.final_exam_passed %}{% with any_pass=1 %}{% endwith %}{% endif %}{% endfor %}
+                                {% if any_pass %}Passed{% else %}Not Attempted{% endif %}
+                            {% endwith %}
+                        {% else %}Not Attempted{% endif %}
+                    </span>
+                </div>
+                <div style="font-size: 0.9rem; color: #374151; margin-top: 0.5rem;">
+                    {% for pr in progress_records %}
+                        <div style="display:flex; justify-content:space-between; padding:.25rem 0; border-bottom:1px dashed #e5e7eb;">
+                            <span>{{ pr.course.title }}</span>
+                            <span>
+                                {% if pr.final_exam_passed %}
+                                    {{ pr.final_exam_score|floatformat:0 }}% · <a href="{% url 'certificate' pr.course.id %}">Certificate</a>
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </span>
                         </div>
+                    {% empty %}
+                        <div>No enrolled courses.</div>
+                    {% endfor %}
+                </div>
+            </div>
                     </div>
                 </section>
                 <div class="quick-actions">
