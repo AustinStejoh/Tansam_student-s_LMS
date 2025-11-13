@@ -1,0 +1,343 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel - Tansam{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* Header & Sidebar Layout */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar-logo {
+            padding: 0 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            padding-top: 2rem;
+        }
+
+        .menu-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .menu-items {
+            list-style: none;
+        }
+
+        .menu-items li {
+            margin: 0.3rem 0;
+        }
+
+        .menu-items a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-items a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #fbbf24;
+            color: white;
+        }
+
+        .menu-items a.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: #fbbf24;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .user-menu {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .logout-btn {
+            padding: 0.6rem 1.2rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Messages */
+        .alerts {
+            margin-bottom: 2rem;
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border-left-color: #22c55e;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left-color: #ef4444;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left-color: #eab308;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                width: 250px;
+                z-index: 999;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .topbar {
+                justify-content: space-between;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+        }
+
+        {% block extra_styles %}{% endblock %}
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <h2>Tansam Admin</h2>
+                <small>Control Panel</small>
+            </div>
+
+            <nav class="sidebar-menu">
+                <!-- Dashboard -->
+                <div class="menu-group">
+                    <div class="menu-label">Main</div>
+                    <ul class="menu-items">
+                        <li><a href="{% url 'admin_dashboard' %}" class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">📊 Dashboard</a></li>
+                    </ul>
+                </div>
+
+                <!-- Users & Access -->
+                <div class="menu-group">
+                    <div class="menu-label">Users & Access</div>
+                    <ul class="menu-items">
+                        <li><a href="{% url 'manage_students' %}" class="{% if request.resolver_match.url_name == 'manage_students' %}active{% endif %}">👥 Students</a></li>
+                        <li><a href="{% url 'manage_students' %}">➕ Add Student</a></li>
+                    </ul>
+                </div>
+
+                <!-- Content Management -->
+                <div class="menu-group">
+                    <div class="menu-label">Content Management</div>
+                    <ul class="menu-items">
+                        <li><a href="{% url 'manage_courses' %}" class="{% if request.resolver_match.url_name == 'manage_courses' %}active{% endif %}">📚 Courses</a></li>
+                        <li><a href="{% url 'manage_topics' %}" class="{% if request.resolver_match.url_name == 'manage_topics' %}active{% endif %}">📖 Topics</a></li>
+                        <li><a href="{% url 'manage_assignments' %}" class="{% if request.resolver_match.url_name == 'manage_assignments' %}active{% endif %}">✏️ Assignments</a></li>
+                    </ul>
+                </div>
+
+                <!-- Assessments & Exams -->
+                <div class="menu-group">
+                    <div class="menu-label">Assessments & Exams</div>
+                    <ul class="menu-items">
+                        <li><a href="{% url 'manage_mcqs' %}" class="{% if request.resolver_match.url_name == 'manage_mcqs' %}active{% endif %}">❓ MCQ Questions</a></li>
+                        <li><a href="{% url 'manage_exams' %}" class="{% if request.resolver_match.url_name == 'manage_exams' %}active{% endif %}">📝 Final Exams</a></li>
+                    </ul>
+                </div>
+
+                <!-- Submissions & Grading -->
+                <div class="menu-group">
+                    <div class="menu-label">Submissions & Grading</div>
+                    <ul class="menu-items">
+                        <li><a href="{% url 'manage_submissions' %}" class="{% if request.resolver_match.url_name == 'manage_submissions' %}active{% endif %}">📤 Submissions</a></li>
+                    </ul>
+                </div>
+
+                <!-- Finance -->
+                <div class="menu-group">
+                    <div class="menu-label">Finance</div>
+                    <ul class="menu-items">
+                        <li><a href="{% url 'manage_payments' %}" class="{% if request.resolver_match.url_name == 'manage_payments' %}active{% endif %}">💳 Payments</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <h1>{% block page_title %}Admin Panel{% endblock %}</h1>
+                <div class="user-menu">
+                    <span>Welcome, <strong>{{ request.user.name }}</strong></span>
+                    <a href="{% url 'admin_logout' %}" class="logout-btn">Logout</a>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content">
+                {% if messages %}
+                <div class="alerts">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle (if needed)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth <= 768) {
+                // Auto-close sidebar on link click
+                const links = sidebar.querySelectorAll('a');
+                links.forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (window.innerWidth <= 768) {
+                            sidebar.classList.remove('open');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

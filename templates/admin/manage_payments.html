@@ -1,0 +1,232 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Payments - Admin{% endblock %}
+{% block page_title %}Payments Management{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .header-action {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .filter-group {
+        margin-bottom: 2rem;
+    }
+
+    .filter-group select {
+        padding: 0.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: #f1f5f9;
+    }
+
+    th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid #e2e8f0;
+        color: #475569;
+    }
+
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #2563eb;
+    }
+
+    .btn-delete {
+        background: #ef4444;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #dc2626;
+    }
+
+    .amount {
+        font-weight: 700;
+        color: #16a34a;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #666;
+    }
+
+    .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #667eea;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header-action">
+    <div>
+        <h2>Payments Management</h2>
+        <p>Track and manage student payments</p>
+    </div>
+    <a href="{% url 'add_payment' %}" class="btn-primary">➕ Record Payment</a>
+</div>
+
+<div class="stats">
+    <div class="stat-card">
+        <div class="stat-label">Total Payments</div>
+        <div class="stat-value">{{ payments|length }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value">₹{{ total_amount|default:"0" }}</div>
+    </div>
+</div>
+
+<div class="filter-group">
+    <form method="get" style="display: flex; gap: 1rem; align-items: center;">
+        <label for="student">Filter by Student:</label>
+        <select name="student" id="student">
+            <option value="">All Students</option>
+            {% for student in students %}
+                <option value="{{ student.id }}" {% if selected_student|stringformat:"s" == student.id|stringformat:"s" %}selected{% endif %}>
+                    {{ student.name }} ({{ student.phone }})
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary">Filter</button>
+    </form>
+</div>
+
+{% if payments %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Amount</th>
+                <th>Transaction ID</th>
+                <th>Payment Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>
+                    <strong>{{ payment.student.name }}</strong><br>
+                    <small>{{ payment.student.phone }}</small>
+                </td>
+                <td class="amount">₹{{ payment.amount }}</td>
+                <td>{{ payment.transaction_id|default:"—" }}</td>
+                <td>{{ payment.payment_date|date:"M d, Y H:i" }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'edit_payment' payment.id %}" class="btn-sm btn-edit">Edit</a>
+                        <a href="{% url 'delete_payment' payment.id %}" class="btn-sm btn-delete" onclick="return confirm('Delete this payment?')">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="table-container">
+    <div class="empty-state">
+        <div class="empty-state-icon">💳</div>
+        <p>No payments recorded yet. <a href="{% url 'add_payment' %}">Record your first payment</a>.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

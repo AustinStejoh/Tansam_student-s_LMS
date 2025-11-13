@@ -1,0 +1,235 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage MCQ Questions - Admin{% endblock %}
+{% block page_title %}MCQ Questions Management{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .header-action {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .filter-group {
+        margin-bottom: 2rem;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .filter-group select {
+        padding: 0.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: #f1f5f9;
+    }
+
+    th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid #e2e8f0;
+        color: #475569;
+    }
+
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #2563eb;
+    }
+
+    .btn-delete {
+        background: #ef4444;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #dc2626;
+    }
+
+    .question-preview {
+        max-width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #666;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #667eea;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: 600;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header-action">
+    <div>
+        <h2>MCQ Questions Management</h2>
+        <p>Create and manage multiple-choice questions for assessments</p>
+    </div>
+    <a href="{% url 'add_mcq' %}" class="btn-primary">➕ Add Question</a>
+</div>
+
+<div class="stats">
+    <div class="stat-card">
+        <div class="stat-label">Total Questions</div>
+        <div class="stat-value">{{ mcqs|length }}</div>
+    </div>
+</div>
+
+<div class="filter-group">
+    <form method="get" style="display: flex; gap: 1rem;">
+        <label for="course">Course:</label>
+        <select name="course" id="course">
+            <option value="">All Courses</option>
+            {% for course in courses %}
+                <option value="{{ course.id }}" {% if selected_course|stringformat:"s" == course.id|stringformat:"s" %}selected{% endif %}>
+                    {{ course.title }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="topic">Topic:</label>
+        <select name="topic" id="topic">
+            <option value="">All Topics</option>
+            {% for topic in topics %}
+                <option value="{{ topic.id }}" {% if selected_topic|stringformat:"s" == topic.id|stringformat:"s" %}selected{% endif %}>
+                    {{ topic.title }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn-primary">Filter</button>
+    </form>
+</div>
+
+{% if mcqs %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Course</th>
+                <th>Topic</th>
+                <th>Correct Answer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mcq in mcqs %}
+            <tr>
+                <td class="question-preview">{{ mcq.question_text }}</td>
+                <td>{{ mcq.course.title }}</td>
+                <td>{{ mcq.topic.title|default:"—" }}</td>
+                <td>Option {{ mcq.correct_option }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'edit_mcq' mcq.id %}" class="btn-sm btn-edit">Edit</a>
+                        <a href="{% url 'delete_mcq' mcq.id %}" class="btn-sm btn-delete" onclick="return confirm('Delete this question?')">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="table-container">
+    <div class="empty-state">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">❓</div>
+        <p>No MCQ questions found. <a href="{% url 'add_mcq' %}">Create your first question</a>.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

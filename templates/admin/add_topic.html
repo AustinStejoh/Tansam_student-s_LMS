@@ -1,0 +1,139 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Add Topic - Admin{% endblock %}
+{% block page_title %}Add New Topic{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .form-card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        max-width: 600px;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1e293b;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Add New Topic</h2>
+    <p style="color: #666; margin-bottom: 1.5rem;">Create a new course topic with video, presentation, and poster files.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="course">Course *</label>
+            <select name="course" id="course" required>
+                <option value="">Select a course</option>
+                {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="title">Topic Title *</label>
+            <input type="text" name="title" id="title" placeholder="e.g., Quadratic Equations" required>
+        </div>
+
+        <div class="form-group">
+            <label for="order">Order (Display Order) *</label>
+            <input type="number" name="order" id="order" placeholder="1" min="1" required>
+        </div>
+
+        <div class="form-group">
+            <label for="video_file">Video File (MP4, WebM, etc.)</label>
+            <input type="file" name="video_file" id="video_file" accept="video/*">
+        </div>
+
+        <div class="form-group">
+            <label for="ppt_file">PowerPoint/PDF File</label>
+            <input type="file" name="ppt_file" id="ppt_file" accept=".ppt,.pptx,.pdf">
+        </div>
+
+        <div class="form-group">
+            <label for="poster_image">Poster/Thumbnail Image</label>
+            <input type="file" name="poster_image" id="poster_image" accept="image/*">
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-primary">✓ Create Topic</button>
+            <a href="{% url 'manage_topics' %}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

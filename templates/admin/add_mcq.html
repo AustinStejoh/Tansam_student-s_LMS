@@ -1,0 +1,204 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Add MCQ Question - Admin{% endblock %}
+{% block page_title %}Add MCQ Question{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .form-card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        max-width: 700px;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1e293b;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .options-group {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin: 1.5rem 0;
+    }
+
+    .option-input {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        align-items: center;
+    }
+
+    .option-input input[type="text"] {
+        flex: 1;
+    }
+
+    .option-number {
+        font-weight: 600;
+        min-width: 60px;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Add MCQ Question</h2>
+    <p style="color: #666; margin-bottom: 1.5rem;">Create a new multiple-choice question for course assessments.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="course">Course *</label>
+            <select name="course" id="course" required>
+                <option value="">Select a course</option>
+                {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="topic">Topic (Optional)</label>
+            <select name="topic" id="topic">
+                <option value="">Link to specific topic (optional)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="question_text">Question *</label>
+            <textarea name="question_text" id="question_text" placeholder="Enter the question text" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="image">Question Image (Optional)</label>
+            <input type="file" name="image" id="image" accept="image/*">
+        </div>
+
+        <div class="options-group">
+            <h3 style="margin-bottom: 1rem;">Answer Options</h3>
+            
+            <div class="option-input">
+                <span class="option-number">Option 1:</span>
+                <input type="text" name="option_1" placeholder="Enter option 1" required>
+            </div>
+
+            <div class="option-input">
+                <span class="option-number">Option 2:</span>
+                <input type="text" name="option_2" placeholder="Enter option 2" required>
+            </div>
+
+            <div class="option-input">
+                <span class="option-number">Option 3:</span>
+                <input type="text" name="option_3" placeholder="Enter option 3" required>
+            </div>
+
+            <div class="option-input">
+                <span class="option-number">Option 4:</span>
+                <input type="text" name="option_4" placeholder="Enter option 4" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="correct_option">Correct Answer *</label>
+            <select name="correct_option" id="correct_option" required>
+                <option value="">Select correct option</option>
+                <option value="1">Option 1</option>
+                <option value="2">Option 2</option>
+                <option value="3">Option 3</option>
+                <option value="4">Option 4</option>
+            </select>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-primary">✓ Create Question</button>
+            <a href="{% url 'manage_mcqs' %}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById('course').addEventListener('change', function() {
+    const courseId = this.value;
+    const topicSelect = document.getElementById('topic');
+    
+    if (!courseId) {
+        topicSelect.innerHTML = '<option value="">Link to specific topic (optional)</option>';
+        return;
+    }
+
+    // Fetch topics for selected course (AJAX - requires backend endpoint)
+    // For now, show placeholder
+    topicSelect.innerHTML = '<option value="">Loading topics...</option>';
+});
+</script>
+{% endblock %}

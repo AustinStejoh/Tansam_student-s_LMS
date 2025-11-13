@@ -1,0 +1,127 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Add Payment - Admin{% endblock %}
+{% block page_title %}Record Payment{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .form-card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        max-width: 600px;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1e293b;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
+
+    input:focus,
+    select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e1;
+    }
+
+    .help-text {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Record Student Payment</h2>
+    <p style="color: #666; margin-bottom: 1.5rem;">Enter payment details to track student transactions.</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="student">Student *</label>
+            <select name="student" id="student" required>
+                <option value="">Select a student</option>
+                {% for student in students %}
+                    <option value="{{ student.id }}">
+                        {{ student.name }} ({{ student.phone }}) - {% if student.payment_status %}Paid{% else %}Unpaid{% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+            <div class="help-text">Choose the student who made the payment</div>
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Amount (₹) *</label>
+            <input type="number" name="amount" id="amount" placeholder="0.00" step="0.01" min="0" required>
+            <div class="help-text">Payment amount in Indian Rupees</div>
+        </div>
+
+        <div class="form-group">
+            <label for="transaction_id">Transaction ID (Optional)</label>
+            <input type="text" name="transaction_id" id="transaction_id" placeholder="e.g., TXN123456789">
+            <div class="help-text">Reference ID from payment gateway (UPI, Card, etc.)</div>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-primary">✓ Record Payment</button>
+            <a href="{% url 'manage_payments' %}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
