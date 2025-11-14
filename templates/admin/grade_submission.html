@@ -1,0 +1,251 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Grade Submission - Admin{% endblock %}
+{% block page_title %}Grade Submission{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .grade-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        max-width: 1000px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .info-card h3 {
+        color: #1e293b;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .info-item {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 1rem;
+    }
+
+    .file-download {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #3b82f6;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-top: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .file-download:hover {
+        background: #2563eb;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1e293b;
+    }
+
+    input[type="number"],
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 150px;
+    }
+
+    input:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .grade-input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .grade-input-wrapper input {
+        max-width: 150px;
+    }
+
+    .grade-max {
+        color: #666;
+        font-weight: 500;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        flex: 1;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e1;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-graded {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    @media (max-width: 768px) {
+        .grade-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="grade-container">
+    <!-- Submission Details -->
+    <div class="card info-card">
+        <h3>📋 Submission Details</h3>
+        
+        <div class="info-item">
+            <div class="info-label">Student</div>
+            <div class="info-value">{{ submission.student.get_full_name }}</div>
+            <div style="font-size: 0.9rem; color: #666; margin-top: 0.25rem;">{{ submission.student.email }}</div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-label">Assignment</div>
+            <div class="info-value">{{ submission.assignment.title }}</div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-label">Course</div>
+            <div class="info-value">{{ submission.assignment.course.title }}</div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-label">Submitted On</div>
+            <div class="info-value">{{ submission.submitted_at|date:"M d, Y H:i" }}</div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-label">Status</div>
+            <div style="margin-top: 0.5rem;">
+                <span class="status-badge {% if submission.grade %}status-graded{% else %}status-pending{% endif %}">
+                    {% if submission.grade %}✓ Graded{% else %}⏳ Pending{% endif %}
+                </span>
+            </div>
+        </div>
+
+        {% if submission.file %}
+            <div class="info-item">
+                <div class="info-label">Submitted File</div>
+                <div class="info-value">{{ submission.file.name|truncatechars:30 }}</div>
+                <a href="{{ submission.file.url }}" class="file-download" download>⬇ Download</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Grading Form -->
+    <div class="card">
+        <h3>📊 Assign Grade</h3>
+        
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="grade">Grade</label>
+                <div class="grade-input-wrapper">
+                    <input type="number" name="grade" id="grade" min="0" max="100" 
+                           value="{{ submission.grade|default:'' }}" placeholder="0" required>
+                    <span class="grade-max">/ 100</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="feedback">Feedback for Student</label>
+                <textarea name="feedback" id="feedback" placeholder="Provide constructive feedback...">{{ submission.feedback }}</textarea>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-primary">✓ Save Grade & Feedback</button>
+                <a href="{% url 'manage_submissions' %}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

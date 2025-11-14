@@ -22,6 +22,8 @@ urlpatterns = [
     path('topics/add/', views.add_topic, name='add_topic'),
     path('topics/<int:topic_id>/edit/', views.edit_topic, name='edit_topic'),
     path('topics/<int:topic_id>/delete/', views.delete_topic, name='delete_topic'),
+    # Ajax endpoints
+    path('api/topics/', views.api_topics, name='api_topics'),
     
     # Assignments Management
     path('assignments/', views.manage_assignments, name='manage_assignments'),

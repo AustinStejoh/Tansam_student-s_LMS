@@ -1,7 +1,7 @@
 {% extends 'admin/base.html' %}
 
-{% block title %}Manage Topics - Admin{% endblock %}
-{% block page_title %}Topics Management{% endblock %}
+{% block title %}Manage Assignments - Admin{% endblock %}
+{% block page_title %}Assignments Management{% endblock %}
 
 {% block extra_styles %}
 <style>
@@ -107,15 +107,42 @@
         background: #dc2626;
     }
 
+    .due-date {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
     .empty-state {
         text-align: center;
         padding: 3rem 2rem;
         color: #666;
     }
 
-    .empty-state-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #667eea;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: 600;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #667eea;
     }
 </style>
 {% endblock %}
@@ -123,10 +150,17 @@
 {% block content %}
 <div class="header-action">
     <div>
-        <h2>Topics Management</h2>
-        <p>Create and manage course topics</p>
+        <h2>Assignments Management</h2>
+        <p>Create and manage course assignments</p>
     </div>
-    <a href="{% url 'add_topic' %}" class="btn-primary">➕ Add New Topic</a>
+    <a href="{% url 'add_assignment' %}" class="btn-primary">➕ Add Assignment</a>
+</div>
+
+<div class="stats">
+    <div class="stat-card">
+        <div class="stat-label">Total Assignments</div>
+        <div class="stat-value">{{ assignments|length }}</div>
+    </div>
 </div>
 
 <div class="filter-group">
@@ -144,41 +178,31 @@
     </form>
 </div>
 
-{% if topics %}
+{% if assignments %}
 <div class="table-container">
     <table>
         <thead>
             <tr>
                 <th>Course</th>
-                <th>Topic Title</th>
-                <th>Order</th>
-                <th>Files</th>
+                <th>Assignment Title</th>
+                <th>Topic</th>
+                <th>Due Date</th>
+                <th>Has File</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for topic in topics %}
+            {% for assignment in assignments %}
             <tr>
-                <td><strong>{{ topic.course.title }}</strong></td>
-                <td>{{ topic.title }}</td>
-                <td>{{ topic.order }}</td>
-                <td>
-                    {% if topic.video_file %}
-                        <div style="max-width:220px;">
-                            <video width="220" height="124" preload="metadata" controls muted playsinline style="border-radius:6px; background:#000;">
-                                <source src="{{ topic.video_file.url }}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    {% else %}
-                        {% if topic.ppt_file %}📊{% endif %}
-                        {% if topic.poster_image %}🖼️{% endif %}
-                    {% endif %}
-                </td>
+                <td><strong>{{ assignment.course.title }}</strong></td>
+                <td>{{ assignment.title }}</td>
+                <td>{{ assignment.topic.title|default:"—" }}</td>
+                <td class="due-date">{{ assignment.due_date|date:"M d, Y H:i" }}</td>
+                <td>{% if assignment.file %}✓ Yes{% else %}—{% endif %}</td>
                 <td>
                     <div class="action-buttons">
-                        <a href="{% url 'edit_topic' topic.id %}" class="btn-sm btn-edit">Edit</a>
-                        <a href="{% url 'delete_topic' topic.id %}" class="btn-sm btn-delete" onclick="return confirm('Delete this topic?')">Delete</a>
+                        <a href="{% url 'edit_assignment' assignment.id %}" class="btn-sm btn-edit">Edit</a>
+                        <a href="{% url 'delete_assignment' assignment.id %}" class="btn-sm btn-delete" onclick="return confirm('Delete this assignment?')">Delete</a>
                     </div>
                 </td>
             </tr>
@@ -189,8 +213,8 @@
 {% else %}
 <div class="table-container">
     <div class="empty-state">
-        <div class="empty-state-icon">📖</div>
-        <p>No topics found. <a href="{% url 'add_topic' %}">Create your first topic</a>.</p>
+        <div style="font-size: 3rem; margin-bottom: 1rem;">✏️</div>
+        <p>No assignments found. <a href="{% url 'add_assignment' %}">Create your first assignment</a>.</p>
     </div>
 </div>
 {% endif %}

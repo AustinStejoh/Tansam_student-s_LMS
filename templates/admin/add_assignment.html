@@ -1,7 +1,7 @@
 {% extends 'admin/base.html' %}
 
-{% block title %}Add MCQ Question - Admin{% endblock %}
-{% block page_title %}Add MCQ Question{% endblock %}
+{% block title %}Add Assignment - Admin{% endblock %}
+{% block page_title %}Add Assignment{% endblock %}
 
 {% block extra_styles %}
 <style>
@@ -25,6 +25,7 @@
     }
 
     input[type="text"],
+    input[type="datetime-local"],
     input[type="file"],
     select,
     textarea {
@@ -38,7 +39,7 @@
 
     textarea {
         resize: vertical;
-        min-height: 100px;
+        min-height: 120px;
     }
 
     input:focus,
@@ -47,29 +48,6 @@
         outline: none;
         border-color: #667eea;
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .options-group {
-        background: #f8fafc;
-        padding: 1.5rem;
-        border-radius: 6px;
-        margin: 1.5rem 0;
-    }
-
-    .option-input {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
-        align-items: center;
-    }
-
-    .option-input input[type="text"] {
-        flex: 1;
-    }
-
-    .option-number {
-        font-weight: 600;
-        min-width: 60px;
     }
 
     .button-group {
@@ -106,13 +84,19 @@
     .btn-secondary:hover {
         background: #cbd5e1;
     }
+
+    .help-text {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.3rem;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="form-card">
-    <h2>Add MCQ Question</h2>
-    <p style="color: #666; margin-bottom: 1.5rem;">Create a new multiple-choice question for course assessments.</p>
+    <h2>Add New Assignment</h2>
+    <p style="color: #666; margin-bottom: 1.5rem;">Create a new assignment for students to complete.</p>
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -132,56 +116,34 @@
             <select name="topic" id="topic">
                 <option value="">Link to specific topic (optional)</option>
             </select>
+            <div class="help-text">Select after choosing a course to link assignment to specific topic</div>
         </div>
 
         <div class="form-group">
-            <label for="question_text">Question *</label>
-            <textarea name="question_text" id="question_text" placeholder="Enter the question text" required></textarea>
+            <label for="title">Assignment Title *</label>
+            <input type="text" name="title" id="title" placeholder="e.g., Chapter 5 Practice Problems" required>
         </div>
 
         <div class="form-group">
-            <label for="image">Question Image (Optional)</label>
-            <input type="file" name="image" id="image" accept="image/*">
-        </div>
-
-        <div class="options-group">
-            <h3 style="margin-bottom: 1rem;">Answer Options</h3>
-            
-            <div class="option-input">
-                <span class="option-number">Option 1:</span>
-                <input type="text" name="option_1" placeholder="Enter option 1" required>
-            </div>
-
-            <div class="option-input">
-                <span class="option-number">Option 2:</span>
-                <input type="text" name="option_2" placeholder="Enter option 2" required>
-            </div>
-
-            <div class="option-input">
-                <span class="option-number">Option 3:</span>
-                <input type="text" name="option_3" placeholder="Enter option 3" required>
-            </div>
-
-            <div class="option-input">
-                <span class="option-number">Option 4:</span>
-                <input type="text" name="option_4" placeholder="Enter option 4" required>
-            </div>
+            <label for="description">Description *</label>
+            <textarea name="description" id="description" placeholder="Provide detailed instructions for the assignment" required></textarea>
         </div>
 
         <div class="form-group">
-            <label for="correct_option">Correct Answer *</label>
-            <select name="correct_option" id="correct_option" required>
-                <option value="">Select correct option</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
-                <option value="4">Option 4</option>
-            </select>
+            <label for="due_date">Due Date & Time *</label>
+            <input type="datetime-local" name="due_date" id="due_date" required>
+            <div class="help-text">Set when the assignment is due</div>
+        </div>
+
+        <div class="form-group">
+            <label for="file">Assignment File (Optional)</label>
+            <input type="file" name="file" id="file">
+            <div class="help-text">Upload PDF, Word doc, or image files for reference</div>
         </div>
 
         <div class="button-group">
-            <button type="submit" class="btn-primary">✓ Create Question</button>
-            <a href="{% url 'manage_mcqs' %}" class="btn-secondary">Cancel</a>
+            <button type="submit" class="btn-primary">✓ Create Assignment</button>
+            <a href="{% url 'manage_assignments' %}" class="btn-secondary">Cancel</a>
         </div>
     </form>
 </div>
@@ -195,7 +157,7 @@ document.getElementById('course').addEventListener('change', function() {
         topicSelect.innerHTML = '<option value="">Link to specific topic (optional)</option>';
         return;
     }
-    // Fetch topics for selected course (AJAX)
+    // Fetch topics for selected course via AJAX
     const apiUrl = "{% url 'api_topics' %}";
     topicSelect.innerHTML = '<option value="">Loading topics...</option>';
     fetch(`${apiUrl}?course=${courseId}`)
@@ -216,7 +178,7 @@ document.getElementById('course').addEventListener('change', function() {
         });
 });
 
-// Pre-load topics if course preselected
+// If a course was preselected, trigger loading topics on page load
 document.addEventListener('DOMContentLoaded', function() {
     const preselected = '{{ selected_course|default:"" }}';
     if (preselected) {

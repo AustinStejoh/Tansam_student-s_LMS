@@ -174,9 +174,15 @@
             <div class="course-card">
                 <h3 class="course-title">{{ course.title }}</h3>
                 <p class="course-description">{{ course.description }}</p>
-                <div class="course-actions">
+                <div class="course-actions" style="flex-wrap: wrap; gap: 0.5rem;">
                     <a href="{% url 'edit_course' course.id %}" class="btn-small btn-edit">Edit</a>
-                    <form method="POST" action="{% url 'delete_course' course.id %}" style="flex: 1;">
+                    <a href="{% url 'manage_topics' %}?course={{ course.id }}" class="btn-small" style="background:#10b981;color:white;">Topics</a>
+                    <a href="{% url 'add_topic' %}?course={{ course.id }}" class="btn-small" style="background:#06b6d4;color:white;">Add Topic</a>
+                    <a href="{% url 'manage_mcqs' %}?course={{ course.id }}" class="btn-small" style="background:#f59e0b;color:white;">MCQs</a>
+                    <a href="{% url 'add_mcq' %}?course={{ course.id }}" class="btn-small" style="background:#f97316;color:white;">Add MCQ</a>
+                    <a href="{% url 'manage_assignments' %}?course={{ course.id }}" class="btn-small" style="background:#7c3aed;color:white;">Assignments</a>
+                    <a href="{% url 'add_assignment' %}?course={{ course.id }}" class="btn-small" style="background:#4f46e5;color:white;">Add Assignment</a>
+                    <form method="POST" action="{% url 'delete_course' course.id %}" style="flex: 1; min-width:120px;">
                         {% csrf_token %}
                         <button type="submit" class="btn-small btn-delete" style="width: 100%; margin: 0;">Delete</button>
                     </form>

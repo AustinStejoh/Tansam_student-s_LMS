@@ -366,9 +366,36 @@ def manage_topics(request):
 
 @login_required(login_url='admin_login')
 @user_passes_test(is_admin, login_url='admin_login')
+def api_topics(request):
+    """AJAX endpoint: return topics for a course as JSON.
+
+    Query params: ?course=<id>
+    Returns: JSON list of {id, title}
+    """
+    course_id = request.GET.get('course')
+    if not course_id:
+        return JsonResponse({'error': 'course parameter is required'}, status=400)
+
+    try:
+        topics_qs = Topic.objects.filter(course_id=course_id).order_by('order').values('id', 'title')
+        topics = list(topics_qs)
+        return JsonResponse(topics, safe=False)
+    except Exception as e:
+        logger.error(f"Error fetching topics for course {course_id}: {e}")
+        return JsonResponse({'error': 'internal server error'}, status=500)
+
+
+@login_required(login_url='admin_login')
+@user_passes_test(is_admin, login_url='admin_login')
 def add_topic(request):
     """Add a new topic."""
     courses = Course.objects.all()
+    # Allow pre-selecting a course via query param ?course=<id>
+    selected_course = request.GET.get('course')
+    try:
+        selected_course = int(selected_course) if selected_course else None
+    except (TypeError, ValueError):
+        selected_course = None
     if request.method == 'POST':
         course_id = request.POST.get('course')
         title = request.POST.get('title')
@@ -393,7 +420,7 @@ def add_topic(request):
             logger.error(f"Error adding topic: {str(e)}")
             messages.error(request, f'Error: {str(e)}')
     
-    context = {'courses': courses}
+    context = {'courses': courses, 'selected_course': selected_course}
     return render(request, 'admin/add_topic.html', context)
 
 
@@ -468,6 +495,12 @@ def manage_assignments(request):
 def add_assignment(request):
     """Add a new assignment."""
     courses = Course.objects.all()
+    # Allow pre-selecting a course via query param ?course=<id>
+    selected_course = request.GET.get('course')
+    try:
+        selected_course = int(selected_course) if selected_course else None
+    except (TypeError, ValueError):
+        selected_course = None
     if request.method == 'POST':
         course_id = request.POST.get('course')
         topic_id = request.POST.get('topic')
@@ -493,7 +526,7 @@ def add_assignment(request):
             logger.error(f"Error adding assignment: {str(e)}")
             messages.error(request, f'Error: {str(e)}')
     
-    context = {'courses': courses}
+    context = {'courses': courses, 'selected_course': selected_course}
     return render(request, 'admin/add_assignment.html', context)
 
 
@@ -633,6 +666,12 @@ def manage_mcqs(request):
 def add_mcq(request):
     """Add a new MCQ question."""
     courses = Course.objects.all()
+    # Allow pre-selecting a course via query param ?course=<id>
+    selected_course = request.GET.get('course')
+    try:
+        selected_course = int(selected_course) if selected_course else None
+    except (TypeError, ValueError):
+        selected_course = None
     if request.method == 'POST':
         course_id = request.POST.get('course')
         topic_id = request.POST.get('topic')
@@ -664,7 +703,7 @@ def add_mcq(request):
             logger.error(f"Error adding MCQ: {str(e)}")
             messages.error(request, f'Error: {str(e)}')
     
-    context = {'courses': courses}
+    context = {'courses': courses, 'selected_course': selected_course}
     return render(request, 'admin/add_mcq.html', context)
 
 

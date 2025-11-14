@@ -1,0 +1,282 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Edit MCQ - Admin{% endblock %}
+{% block page_title %}Edit MCQ Question{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .form-card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        max-width: 700px;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1e293b;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .options-section {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+    }
+
+    .option-group {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .option-letter {
+        font-weight: 700;
+        color: #667eea;
+        font-size: 1.2rem;
+        width: 30px;
+        flex-shrink: 0;
+        padding-top: 0.75rem;
+    }
+
+    .option-input {
+        flex: 1;
+    }
+
+    .option-input input {
+        width: 100%;
+    }
+
+    .option-radio {
+        width: auto;
+        margin-top: 0.75rem;
+        flex-shrink: 0;
+        cursor: pointer;
+    }
+
+    .correct-answer-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .image-section {
+        border: 2px dashed #e2e8f0;
+        padding: 1.5rem;
+        border-radius: 6px;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .image-preview {
+        max-width: 200px;
+        max-height: 200px;
+        margin-bottom: 1rem;
+    }
+
+    .image-info {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.5rem;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e1;
+    }
+
+    .help-text {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Edit MCQ Question</h2>
+    <p style="color: #666; margin-bottom: 1.5rem;">Update the question and answer options.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="course">Course *</label>
+            <select name="course" id="course" required onchange="updateTopics()">
+                {% for course in courses %}
+                    <option value="{{ course.id }}" {% if course.id == mcq.course.id %}selected{% endif %}>
+                        {{ course.title }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="topic">Topic (Optional)</label>
+            <select name="topic" id="topic">
+                <option value="">Link to specific topic (optional)</option>
+                {% for course in courses %}
+                    {% if course.id == mcq.course.id %}
+                        {% for topic in course.topics.all %}
+                            <option value="{{ topic.id }}" {% if topic.id == mcq.topic.id %}selected{% endif %}>
+                                {{ topic.title }}
+                            </option>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="question">Question Text *</label>
+            <textarea name="question" id="question" required>{{ mcq.question }}</textarea>
+        </div>
+
+        <!-- Image Section -->
+        <div class="image-section">
+            <label for="image">Question Image (Optional)</label>
+            {% if mcq.image %}
+                <img src="{{ mcq.image.url }}" alt="Question image" class="image-preview">
+                <div class="image-info">✓ Current image: {{ mcq.image.name|truncatechars:30 }}</div>
+            {% else %}
+                <div style="color: #999; margin-bottom: 1rem;">No image uploaded</div>
+            {% endif %}
+            <input type="file" name="image" id="image" accept="image/*">
+            <div class="help-text">Upload an image to illustrate the question (JPG, PNG, GIF)</div>
+        </div>
+
+        <!-- Options Section -->
+        <div class="options-section">
+            <h3 style="margin-bottom: 1rem;">Answer Options</h3>
+
+            {% for option_label, option_value in mcq_options %}
+                <div class="option-group">
+                    <div class="option-letter">{{ option_label }}</div>
+                    <div class="option-input">
+                        <input type="text" name="option_{{ forloop.counter }}" value="{{ option_value }}" required>
+                    </div>
+                    <input type="radio" name="correct_option" value="{{ option_label }}" 
+                           {% if mcq.correct_option == option_label %}checked{% endif %} 
+                           class="option-radio" required>
+                </div>
+            {% empty %}
+                <div class="option-group">
+                    <div class="option-letter">A</div>
+                    <div class="option-input">
+                        <input type="text" name="option_1" value="{{ mcq.option_a }}" required>
+                    </div>
+                    <input type="radio" name="correct_option" value="A" 
+                           {% if mcq.correct_option == 'A' %}checked{% endif %} 
+                           class="option-radio" required>
+                </div>
+                <div class="option-group">
+                    <div class="option-letter">B</div>
+                    <div class="option-input">
+                        <input type="text" name="option_2" value="{{ mcq.option_b }}" required>
+                    </div>
+                    <input type="radio" name="correct_option" value="B" 
+                           {% if mcq.correct_option == 'B' %}checked{% endif %} 
+                           class="option-radio" required>
+                </div>
+                <div class="option-group">
+                    <div class="option-letter">C</div>
+                    <div class="option-input">
+                        <input type="text" name="option_3" value="{{ mcq.option_c }}" required>
+                    </div>
+                    <input type="radio" name="correct_option" value="C" 
+                           {% if mcq.correct_option == 'C' %}checked{% endif %} 
+                           class="option-radio" required>
+                </div>
+                <div class="option-group">
+                    <div class="option-letter">D</div>
+                    <div class="option-input">
+                        <input type="text" name="option_4" value="{{ mcq.option_d }}" required>
+                    </div>
+                    <input type="radio" name="correct_option" value="D" 
+                           {% if mcq.correct_option == 'D' %}checked{% endif %} 
+                           class="option-radio" required>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-primary">✓ Save Changes</button>
+            <a href="{% url 'manage_mcqs' %}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function updateTopics() {
+    // This would be enhanced with AJAX to dynamically load topics
+    // For now, it's a placeholder for future enhancement
+}
+</script>
+{% endblock %}

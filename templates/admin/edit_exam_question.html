@@ -1,0 +1,282 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Edit Exam Question - Admin{% endblock %}
+{% block page_title %}Edit Exam Question{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .form-card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        max-width: 800px;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1e293b;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .question-type-section {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .radio-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .radio-item input[type="radio"] {
+        width: auto;
+        cursor: pointer;
+    }
+
+    .radio-item label {
+        margin: 0;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .mcq-options {
+        display: none;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 6px;
+        border: 2px solid #e2e8f0;
+        margin-bottom: 1.5rem;
+    }
+
+    .mcq-options.active {
+        display: block;
+    }
+
+    .option-group {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .option-label {
+        width: 30px;
+        font-weight: 700;
+        color: #667eea;
+        padding-top: 0.75rem;
+    }
+
+    .option-input {
+        flex: 1;
+    }
+
+    .option-input input {
+        width: 100%;
+    }
+
+    .option-radio {
+        width: auto;
+        margin-top: 0.75rem;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e1;
+    }
+
+    .help-text {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.3rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .radio-group {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Edit Question</h2>
+    <p style="color: #666; margin-bottom: 1.5rem;">Update question details in: <strong>{{ exam.title }}</strong></p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="question-type-section">
+            <label>Question Type</label>
+            <div class="radio-group">
+                <div class="radio-item">
+                    <input type="radio" name="question_type" id="type_mcq" value="mcq" 
+                           {% if question.question_type == 'mcq' %}checked{% endif %} 
+                           onchange="toggleQuestionType()">
+                    <label for="type_mcq">Multiple Choice (MCQ)</label>
+                </div>
+                <div class="radio-item">
+                    <input type="radio" name="question_type" id="type_short" value="short" 
+                           {% if question.question_type == 'short' %}checked{% endif %} 
+                           onchange="toggleQuestionType()">
+                    <label for="type_short">Short Answer</label>
+                </div>
+                <div class="radio-item">
+                    <input type="radio" name="question_type" id="type_essay" value="essay" 
+                           {% if question.question_type == 'essay' %}checked{% endif %} 
+                           onchange="toggleQuestionType()">
+                    <label for="type_essay">Essay</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="question">Question Text *</label>
+            <textarea name="question" id="question" required>{{ question.question }}</textarea>
+        </div>
+
+        <!-- MCQ Options -->
+        <div class="mcq-options {% if question.question_type == 'mcq' %}active{% endif %}" id="mcq-section">
+            <h3>Answer Options</h3>
+
+            {% for letter, value in question_options %}
+                <div class="option-group">
+                    <div class="option-label">{{ letter }}</div>
+                    <div class="option-input">
+                        <input type="text" name="mcq_option_{{ letter }}" value="{{ value }}" placeholder="Option {{ letter }}">
+                    </div>
+                    <input type="radio" name="correct_option" value="{{ letter }}" 
+                           {% if question.correct_option == letter %}checked{% endif %} 
+                           class="option-radio">
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="marks">Marks *</label>
+                <input type="number" name="marks" id="marks" min="1" value="{{ question.marks }}" required>
+                <div class="help-text">Marks for this question</div>
+            </div>
+
+            <div class="form-group">
+                <label for="difficulty">Difficulty Level</label>
+                <select name="difficulty" id="difficulty">
+                    <option value="easy" {% if question.difficulty == 'easy' %}selected{% endif %}>Easy</option>
+                    <option value="medium" {% if question.difficulty == 'medium' %}selected{% endif %}>Medium</option>
+                    <option value="hard" {% if question.difficulty == 'hard' %}selected{% endif %}>Hard</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="explanation">Explanation / Solution</label>
+            <textarea name="explanation" id="explanation" placeholder="Provide explanation for the correct answer...">{{ question.explanation }}</textarea>
+            <div class="help-text">Optional: Shown to students after exam completion</div>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-primary">✓ Save Changes</button>
+            <a href="{% url 'manage_exam_questions' exam.id %}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function toggleQuestionType() {
+    const mcqSection = document.getElementById('mcq-section');
+    const questionType = document.querySelector('input[name="question_type"]:checked').value;
+    
+    if (questionType === 'mcq') {
+        mcqSection.classList.add('active');
+    } else {
+        mcqSection.classList.remove('active');
+    }
+}
+</script>
+{% endblock %}

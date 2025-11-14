@@ -1,0 +1,317 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Exam Questions - Admin{% endblock %}
+{% block page_title %}Manage Exam Questions{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .dashboard-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+    }
+
+    .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .exam-info h2 {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .exam-meta {
+        display: flex;
+        gap: 2rem;
+        font-size: 0.95rem;
+        color: #666;
+    }
+
+    .exam-meta-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .meta-label {
+        font-size: 0.85rem;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .meta-value {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .btn-add {
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    thead {
+        background: #f8fafc;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    tr:hover {
+        background: #f8fafc;
+    }
+
+    .question-preview {
+        max-width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .question-number {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 32px;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        flex-shrink: 0;
+    }
+
+    .marks-badge {
+        display: inline-block;
+        background: #dbeafe;
+        color: #1e40af;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .action-button {
+        padding: 0.5rem 1rem;
+        margin-right: 0.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        font-size: 0.9rem;
+    }
+
+    .btn-edit {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #2563eb;
+    }
+
+    .btn-delete {
+        background: #ef4444;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #dc2626;
+    }
+
+    .btn-reorder {
+        background: #8b5cf6;
+        color: white;
+    }
+
+    .btn-reorder:hover {
+        background: #7c3aed;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #666;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .drag-handle {
+        cursor: grab;
+        color: #999;
+        margin-right: 0.5rem;
+    }
+
+    .drag-handle:hover {
+        color: #667eea;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-card">
+    <div class="exam-header">
+        <div class="exam-info">
+            <h2>{{ exam.title }}</h2>
+            <div class="exam-meta">
+                <div class="exam-meta-item">
+                    <span class="meta-label">Course</span>
+                    <span class="meta-value">{{ exam.course.title }}</span>
+                </div>
+                <div class="exam-meta-item">
+                    <span class="meta-label">Total Marks</span>
+                    <span class="meta-value">{{ exam.total_marks }}</span>
+                </div>
+                <div class="exam-meta-item">
+                    <span class="meta-label">Duration</span>
+                    <span class="meta-value">{{ exam.duration_minutes }} minutes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ total_questions }}</div>
+        <div class="stat-label">Total Questions</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ total_marks_assigned }}</div>
+        <div class="stat-label">Marks Assigned</div>
+    </div>
+</div>
+
+<div class="dashboard-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3>Questions</h3>
+        <a href="{% url 'add_exam_question' exam.id %}" class="btn-add">+ Add Question</a>
+    </div>
+
+    {% if questions %}
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40px;"></th>
+                        <th>Question</th>
+                        <th>Type</th>
+                        <th>Marks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in questions %}
+                        <tr>
+                            <td>
+                                <span class="drag-handle">≡</span>
+                                <span class="question-number">{{ forloop.counter }}</span>
+                            </td>
+                            <td>
+                                <div class="question-preview">{{ question.question|truncatechars:60 }}</div>
+                            </td>
+                            <td>
+                                {% if question.question_type == 'mcq' %}
+                                    <span style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.85rem;">MCQ</span>
+                                {% elif question.question_type == 'short' %}
+                                    <span style="background: #fce7f3; color: #be185d; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.85rem;">Short</span>
+                                {% else %}
+                                    <span style="background: #f3e8ff; color: #7c3aed; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.85rem;">Essay</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="marks-badge">{{ question.marks }} marks</span>
+                            </td>
+                            <td>
+                                <a href="{% url 'edit_exam_question' exam.id question.id %}" class="action-button btn-edit">Edit</a>
+                                <form method="post" style="display:inline;" onsubmit="return confirm('Delete this question?');">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="question_id" value="{{ question.id }}">
+                                    <button type="submit" class="action-button btn-delete">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <p>No questions added yet.</p>
+            <a href="{% url 'add_exam_question' exam.id %}" class="btn-add" style="margin-top: 1rem;">+ Add First Question</a>
+        </div>
+    {% endif %}
+</div>
+
+<div style="margin-top: 2rem;">
+    <a href="{% url 'manage_exams' %}" style="color: #667eea; text-decoration: none;">← Back to Exams</a>
+</div>
+{% endblock %}
